@@ -4,6 +4,7 @@ import { API_URL } from "../config";
 const MemoriesGallery = () => {
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedMemory, setSelectedMemory] = useState(null);
   const audioRef = useRef(null);
 
@@ -11,10 +12,14 @@ const MemoriesGallery = () => {
     const fetchMemories = async () => {
       try {
         const response = await fetch(`${API_URL}/api/memories`);
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}`);
+        }
         const data = await response.json();
-        setMemories(data.memories);
+        setMemories(data.memories ?? []);
       } catch (error) {
         console.error("Error fetching memories:", error);
+        setError(`Couldn't load memories from ${API_URL} (${error.message}). Is the backend running?`);
       } finally {
         setLoading(false);
       }
@@ -35,6 +40,18 @@ const MemoriesGallery = () => {
   if (loading) {
     return (
       <div className="text-center text-gray-400 p-8">Loading memories...</div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-center text-red-400 p-8">{error}</div>;
+  }
+
+  if (memories.length === 0) {
+    return (
+      <div className="text-center text-gray-400 p-8">
+        No memories yet. Use "+ Create Memory" to record your first one.
+      </div>
     );
   }
 
