@@ -22,10 +22,14 @@ hosted = [
 ]
 
 [dependency-groups]
-dev = ["ruff"]
+dev = ["pytest", "ruff"]
 
 [tool.uv]
 package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning", "ignore:Using `httpx` with `starlette.testclient`"]
 
 [tool.ruff]
 line-length = 120
