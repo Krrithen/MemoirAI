@@ -1,3 +1,0 @@
-# Optional: only needed for TRANSCRIBER=assemblyai or LLM=gemini
-assemblyai==1.6.1
-google-genai==2.25.0

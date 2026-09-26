@@ -19,7 +19,8 @@ SYSTEM_PROMPT = """You turn a spoken transcript of a personal memory into a writ
 - Refine the transcript into a polished, coherent story told in the first person.
 - Do not add any people, places, events or details that are not in the transcript. Keep every detail that is.
 - Write a short title that captures the memory.
-- Pick up to three emotions present in the memory, only from: Joy, Love, Gratitude, Hope, Contentment, Surprise, Curiosity, Anger.
+- Pick up to three emotions present in the memory, only from:
+  Joy, Love, Gratitude, Hope, Contentment, Surprise, Curiosity, Anger.
 Respond with JSON only: {"title": ..., "story": ..., "emotions": [...]}"""
 
 

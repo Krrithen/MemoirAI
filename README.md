@@ -21,7 +21,7 @@ If the recording has no speech, the request fails with a clear error and nothing
 
 ## Running locally
 
-Prerequisites: Python 3.11+, Node 18+, Docker, and [Ollama](https://ollama.com/download).
+Prerequisites: [uv](https://docs.astral.sh/uv/), Node 18+, Docker, and [Ollama](https://ollama.com/download). uv installs the right Python version itself.
 
 ```bash
 # Model and database
@@ -30,10 +30,8 @@ docker compose up -d
 
 # Backend (http://localhost:8000)
 cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+uv sync
+uv run uvicorn app.main:app --reload
 
 # Frontend (http://localhost:3000)
 cd frontend
@@ -42,6 +40,10 @@ npm start
 ```
 
 The Whisper model (`small` by default) downloads on the first transcription and is cached after that.
+
+`GET /api/health` reports that the API process is up; `GET /api/ready` also checks the database (2 s timeout) and returns 503 if it's unreachable.
+
+Lint with `uv run ruff check .` from `backend/`.
 
 ## Configuration
 
@@ -55,7 +57,7 @@ Every setting has a local default, so no `.env` is needed. Override with environ
 | `WHISPER_MODEL` | `small` |
 | `REACT_APP_API_URL` (frontend) | `http://localhost:8000` |
 
-Hosted providers are optional and off by default, kept for comparing against the local path: set `TRANSCRIBER=assemblyai` with `ASSEMBLYAI_API_KEY`, or `LLM=gemini` with `GEMINI_API_KEY`, after `pip install -r requirements-hosted.txt`.
+Hosted providers are optional and off by default, kept for comparing against the local path: set `TRANSCRIBER=assemblyai` with `ASSEMBLYAI_API_KEY`, or `LLM=gemini` with `GEMINI_API_KEY`, after `uv sync --extra hosted`.
 
 ## License
 

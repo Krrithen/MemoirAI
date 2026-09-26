@@ -1,12 +1,11 @@
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Optional
 
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi import Path as PathParam
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from app import db
 from app.config import get_settings
@@ -58,6 +57,16 @@ def health_check():
     return {"status": "ok", "message": "Memoir AI API is running"}
 
 
+@app.get("/api/ready")
+def readiness_check():
+    try:
+        db.ping()
+    except Exception as e:
+        logger.warning("Readiness check failed: %s", e)
+        return JSONResponse({"status": "unavailable", "database": "down"}, status_code=503)
+    return {"status": "ready", "database": "ok"}
+
+
 @app.get("/api/memories")
 def get_all_memories(request: Request):
     with db.connect() as conn:
@@ -70,9 +79,9 @@ def get_all_memories(request: Request):
 @app.post("/api/memories")
 def create_memory(
     request: Request,
-    audio: Optional[UploadFile] = File(None),
-    image: Optional[UploadFile] = File(None),
-    video: Optional[UploadFile] = File(None),
+    audio: UploadFile | None = File(None),
+    image: UploadFile | None = File(None),
+    video: UploadFile | None = File(None),
 ):
     if not audio:
         raise HTTPException(status_code=400, detail="An audio recording is required")
@@ -87,14 +96,14 @@ def create_memory(
         transcript = get_transcriber().transcribe(audio_up.data, Path(audio_up.filename).suffix)
     except TranscriptionFailed as e:
         logger.warning("Transcription failed: %s", e)
-        raise HTTPException(status_code=422, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e)) from e
     logger.info("Transcribed %d characters", len(transcript))
 
     try:
         enrichment = get_llm().enrich(transcript)
     except EnrichmentFailed as e:
         logger.error("Enrichment failed: %s", e)
-        raise HTTPException(status_code=502, detail=str(e))
+        raise HTTPException(status_code=502, detail=str(e)) from e
 
     uploads = [u for u in (audio_up, video_up, image_up) if u]
     for u in uploads:
@@ -103,8 +112,7 @@ def create_memory(
     with db.connect() as conn:
         for u in uploads:
             conn.execute(
-                "INSERT INTO media (sha256, content_type, bytes) VALUES (%s, %s, %s)"
-                " ON CONFLICT (sha256) DO NOTHING",
+                "INSERT INTO media (sha256, content_type, bytes) VALUES (%s, %s, %s) ON CONFLICT (sha256) DO NOTHING",
                 (u.sha256, u.content_type, len(u.data)),
             )
         row = conn.execute(

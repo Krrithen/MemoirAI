@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Check if Python is installed
-if ! command -v python3 &> /dev/null; then
-    echo "Python 3 is not installed. Please install it before running this script."
+# Check if uv is installed (it manages Python for the backend)
+if ! command -v uv &> /dev/null; then
+    echo "uv is not installed. See https://docs.astral.sh/uv/ to install it."
     exit 1
 fi
 
@@ -20,23 +20,13 @@ docker compose up -d
 echo "Setting up the backend..."
 cd backend
 
-# Create virtual environment if it doesn't exist
-if [ ! -d "venv" ]; then
-    echo "Creating virtual environment..."
-    python3 -m venv venv
-fi
-
-# Activate virtual environment
-echo "Activating virtual environment..."
-source venv/bin/activate
-
-# Install backend dependencies
+# Install backend dependencies from uv.lock
 echo "Installing backend dependencies..."
-pip install -r requirements.txt
+uv sync
 
 # Start backend server in the background
 echo "Starting backend server..."
-uvicorn app.main:app --reload &
+uv run uvicorn app.main:app --reload &
 BACKEND_PID=$!
 
 # Go back to root directory
