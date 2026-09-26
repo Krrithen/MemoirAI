@@ -1,0 +1,842 @@
+{
+  "summary": {
+    "label": "baseline",
+    "model": "qwen3:8b",
+    "temperature": 0.3,
+    "samples_per_transcript": 3,
+    "stories": 30,
+    "mean_novel_rate": 0.32,
+    "median_novel_rate": 0.39,
+    "stories_with_0_novel_words": 7,
+    "mean_length_ratio": 1.65,
+    "mean_seconds": 4.89
+  },
+  "rows": [
+    {
+      "id": "grandma-pie",
+      "sample": 0,
+      "seconds": 6.53,
+      "title": "A Flour-Filled Afternoon",
+      "story": "Last summer, I visited my grandmother in Lisbon, and we spent a lovely afternoon baking an apple pie together. The kitchen was filled with the warm scent of cinnamon and the soft hum of the oven. As I stirred the mixture, I accidentally spilled a handful of flour across the kitchen floor. My grandmother laughed, her eyes twinkling with joy. In that moment, I felt an overwhelming sense of gratitude for the simple, heartfelt connection we shared.",
+      "emotions": [
+        "Gratitude",
+        "Joy",
+        "Contentment"
+      ],
+      "novel_words": [
+        "spent",
+        "lovely",
+        "filled",
+        "warm",
+        "scent",
+        "cinnamon",
+        "soft",
+        "hum",
+        "oven",
+        "stirred",
+        "mixture",
+        "accidentally",
+        "handful",
+        "across",
+        "eyes",
+        "twinkling",
+        "joy",
+        "moment",
+        "overwhelming",
+        "sense",
+        "gratitude",
+        "simple",
+        "heartfelt",
+        "connection",
+        "shared"
+      ],
+      "novel_rate": 0.5813953488372093,
+      "length_ratio": 2.3333333333333335
+    },
+    {
+      "id": "grandma-pie",
+      "sample": 1,
+      "seconds": 5.38,
+      "title": "A Flour-Filled Afternoon",
+      "story": "Last summer, I visited my grandmother in Lisbon, and we spent a lovely afternoon baking an apple pie together. The kitchen was filled with the warm scent of cinnamon and the soft hum of the oven. As I stirred the mixture, I accidentally spilled a handful of flour across the kitchen floor. My grandmother laughed, her eyes sparkling with joy, and I felt a wave of gratitude wash over me. That simple moment, filled with laughter and shared effort, remains one of my most cherished memories.",
+      "emotions": [
+        "Gratitude",
+        "Joy",
+        "Contentment"
+      ],
+      "novel_words": [
+        "spent",
+        "lovely",
+        "filled",
+        "warm",
+        "scent",
+        "cinnamon",
+        "soft",
+        "hum",
+        "oven",
+        "stirred",
+        "mixture",
+        "accidentally",
+        "handful",
+        "across",
+        "eyes",
+        "sparkling",
+        "joy",
+        "wave",
+        "gratitude",
+        "wash",
+        "simple",
+        "moment",
+        "laughter",
+        "shared",
+        "effort",
+        "remains",
+        "one",
+        "cherished",
+        "memories"
+      ],
+      "novel_rate": 0.625,
+      "length_ratio": 2.606060606060606
+    },
+    {
+      "id": "grandma-pie",
+      "sample": 2,
+      "seconds": 5.36,
+      "title": "A Flour-Filled Afternoon",
+      "story": "Last summer, I visited my grandmother in Lisbon, and we spent a lovely afternoon baking an apple pie together. The kitchen was filled with the warm scent of cinnamon and the soft hum of our laughter. As I was mixing the ingredients, I accidentally spilled a generous amount of flour across the kitchen floor. My grandmother laughed heartily, her eyes sparkling with joy. In that moment, I felt an overwhelming sense of gratitude for the simple, joyful moments we shared.",
+      "emotions": [
+        "Gratitude",
+        "Joy",
+        "Contentment"
+      ],
+      "novel_words": [
+        "spent",
+        "lovely",
+        "filled",
+        "warm",
+        "scent",
+        "cinnamon",
+        "soft",
+        "hum",
+        "laughter",
+        "mixing",
+        "ingredients",
+        "accidentally",
+        "generous",
+        "amount",
+        "across",
+        "heartily",
+        "eyes",
+        "sparkling",
+        "joy",
+        "moment",
+        "overwhelming",
+        "sense",
+        "gratitude",
+        "simple",
+        "joyful",
+        "shared"
+      ],
+      "novel_rate": 0.6,
+      "length_ratio": 2.4242424242424243
+    },
+    {
+      "id": "first-bike",
+      "sample": 0,
+      "seconds": 5.56,
+      "title": "The Day I Felt the Wind",
+      "story": "I was seven years old when my dad taught me to ride a bike. It was a red bike we bought at a garage sale, and I remember the excitement of getting it. We practiced in the church parking lot on Sundays, and I fell down so many times that I almost lost hope. But one day, he let go, and I didn't even notice. I just kept going, feeling the wind in my hair and the thrill of freedom.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Hope"
+      ],
+      "novel_words": [
+        "years",
+        "old",
+        "bought",
+        "remember",
+        "excitement",
+        "getting",
+        "many",
+        "almost",
+        "lost",
+        "hope",
+        "feeling",
+        "wind",
+        "hair",
+        "thrill",
+        "freedom"
+      ],
+      "novel_rate": 0.39473684210526316,
+      "length_ratio": 1.4035087719298245
+    },
+    {
+      "id": "first-bike",
+      "sample": 1,
+      "seconds": 5.91,
+      "title": "The Day I Learned to Ride",
+      "story": "I was seven years old when my dad taught me to ride a bike. It was a red bike we bought at a garage sale, and we practiced in the church parking lot every Sunday. I fell down so many times, but I kept getting back up. One day, he let go of the back of the bike, and I didn't even notice. I just kept going, feeling the wind in my hair and the sun on my face. It was like I had finally found my place in the world.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Hope"
+      ],
+      "novel_words": [
+        "years",
+        "old",
+        "bought",
+        "every",
+        "many",
+        "getting",
+        "back",
+        "feeling",
+        "wind",
+        "hair",
+        "sun",
+        "face",
+        "finally",
+        "found",
+        "place",
+        "world"
+      ],
+      "novel_rate": 0.40476190476190477,
+      "length_ratio": 1.5964912280701755
+    },
+    {
+      "id": "first-bike",
+      "sample": 2,
+      "seconds": 4.74,
+      "title": "The Day I Learned to Ride",
+      "story": "I was seven years old when my dad taught me to ride a bike. It was a red bike we bought at a garage sale, and we practiced in the church parking lot every Sunday. I fell down so many times, but I kept getting back up. One day, he let go, and I didn't even notice. I just kept going, feeling a sense of freedom I had never known before.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Hope"
+      ],
+      "novel_words": [
+        "years",
+        "old",
+        "bought",
+        "every",
+        "many",
+        "getting",
+        "back",
+        "feeling",
+        "sense",
+        "freedom",
+        "never",
+        "known"
+      ],
+      "novel_rate": 0.3333333333333333,
+      "length_ratio": 1.2456140350877194
+    },
+    {
+      "id": "moving-to-austin",
+      "sample": 0,
+      "seconds": 4.38,
+      "title": "A Friday Ritual",
+      "story": "When we moved to Austin in 2019, we didn\u2019t know anyone. My wife Priya found this taco place on South Congress, and we basically went there every Friday for a year. The owner, Luis, started remembering our order. That\u2019s kind of when it started to feel like home.",
+      "emotions": [
+        "Contentment",
+        "Gratitude",
+        "Hope"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "moving-to-austin",
+      "sample": 1,
+      "seconds": 3.98,
+      "title": "A Taste of Home",
+      "story": "When we moved to Austin in 2019, we didn\u2019t know anyone. My wife Priya found this taco place on South Congress, and we basically went there every Friday for a year. The owner, Luis, started remembering our order. That\u2019s kind of when it started to feel like home.",
+      "emotions": [
+        "Contentment",
+        "Gratitude",
+        "Hope"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "moving-to-austin",
+      "sample": 2,
+      "seconds": 4.1,
+      "title": "A Place That Felt Like Home",
+      "story": "When we moved to Austin in 2019, we didn\u2019t know anyone. My wife Priya found this taco place on South Congress, and we basically went there every Friday for a year. The owner, Luis, started remembering our order. That\u2019s kind of when it started to feel like home.",
+      "emotions": [
+        "Contentment",
+        "Gratitude",
+        "Hope"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "exam-result",
+      "sample": 0,
+      "seconds": 4.75,
+      "title": "A Moment of Relief",
+      "story": "I remember checking my exam results on my phone at the bus stop. I passed. I passed the bar exam on the second try. The moment I saw the word 'passed' on the screen, my heart swelled with relief. I called my mom right away, and before I even finished the sentence, she started crying. Her tears made me feel seen, supported, and deeply loved.",
+      "emotions": [
+        "Joy",
+        "Love",
+        "Gratitude"
+      ],
+      "novel_words": [
+        "moment",
+        "saw",
+        "word",
+        "screen",
+        "heart",
+        "swelled",
+        "relief",
+        "right",
+        "away",
+        "tears",
+        "made",
+        "feel",
+        "seen",
+        "supported",
+        "deeply",
+        "loved"
+      ],
+      "novel_rate": 0.43243243243243246,
+      "length_ratio": 1.7105263157894737
+    },
+    {
+      "id": "exam-result",
+      "sample": 1,
+      "seconds": 5.08,
+      "title": "A Moment of Relief",
+      "story": "I remember checking my exam results on my phone at the bus stop. I passed. I passed the bar exam on the second try. The moment I saw the word 'passed' on the screen, my heart swelled with relief. I called my mom right away, and before I even finished the sentence, she started crying. Her tears were a mix of pride and joy, and in that moment, I felt an overwhelming sense of accomplishment and love for her.",
+      "emotions": [
+        "Joy",
+        "Love",
+        "Gratitude"
+      ],
+      "novel_words": [
+        "moment",
+        "saw",
+        "word",
+        "screen",
+        "heart",
+        "swelled",
+        "relief",
+        "right",
+        "away",
+        "tears",
+        "mix",
+        "pride",
+        "joy",
+        "felt",
+        "overwhelming",
+        "sense",
+        "accomplishment",
+        "love"
+      ],
+      "novel_rate": 0.475,
+      "length_ratio": 2.0789473684210527
+    },
+    {
+      "id": "exam-result",
+      "sample": 2,
+      "seconds": 5.06,
+      "title": "A Moment of Relief",
+      "story": "I remember checking my exam results on my phone at the bus stop. I passed. I passed the bar exam on the second try. The moment I saw the word 'passed' on the screen, my heart swelled with relief. I called my mom right away, and before I even finished the sentence, she started crying. Her tears were a reflection of all the hard work, the late nights, and the hope that had led me to this moment.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Hope"
+      ],
+      "novel_words": [
+        "moment",
+        "saw",
+        "word",
+        "screen",
+        "heart",
+        "swelled",
+        "relief",
+        "right",
+        "away",
+        "tears",
+        "reflection",
+        "hard",
+        "work",
+        "late",
+        "nights",
+        "hope",
+        "led"
+      ],
+      "novel_rate": 0.46153846153846156,
+      "length_ratio": 2.0526315789473686
+    },
+    {
+      "id": "dog-biscuit",
+      "sample": 0,
+      "seconds": 5.17,
+      "title": "Biscuit's Couch",
+      "story": "We adopted Biscuit from the shelter in March. He was scared of everything\u2014like the vacuum, the doorbell, even his own reflection. At first, he would hide behind the furniture, trembling whenever there was a sudden noise. It took him about three weeks before he would sleep on the couch with us. Now he won't get off it. He's found his place, and we've found ours.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [
+        "first",
+        "hide",
+        "behind",
+        "furniture",
+        "trembling",
+        "whenever",
+        "sudden",
+        "noise",
+        "found",
+        "place"
+      ],
+      "novel_rate": 0.39285714285714285,
+      "length_ratio": 1.5116279069767442
+    },
+    {
+      "id": "dog-biscuit",
+      "sample": 1,
+      "seconds": 3.63,
+      "title": "Biscuit's Couch",
+      "story": "We adopted Biscuit from the shelter in March. He was scared of everything\u2014like the vacuum, the doorbell, even his own reflection. It took him about three weeks before he would sleep on the couch with us. Now he won't get off it.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Hope"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9767441860465116
+    },
+    {
+      "id": "dog-biscuit",
+      "sample": 2,
+      "seconds": 5.29,
+      "title": "Biscuit's Couch",
+      "story": "We adopted Biscuit from the shelter in March. He was scared of everything\u2014like the vacuum, the doorbell, even his own reflection. At first, he would hide under the bed or behind the sofa, trembling whenever there was a loud noise. It took him about three weeks before he would sleep on the couch with us. Now he won't get off it. He's found his place, and we've found ours.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [
+        "first",
+        "hide",
+        "bed",
+        "behind",
+        "sofa",
+        "trembling",
+        "whenever",
+        "loud",
+        "noise",
+        "found",
+        "place"
+      ],
+      "novel_rate": 0.41379310344827586,
+      "length_ratio": 1.6046511627906976
+    },
+    {
+      "id": "power-outage",
+      "sample": 0,
+      "seconds": 6.52,
+      "title": "Candlelight and Cards",
+      "story": "During the ice storm, there was a power outage that lasted two days. With no electricity, the house fell into a quiet stillness, broken only by the occasional creak of the roof and the sound of wind howling against the windows. My brother and I decided to pass the time by playing cards by candlelight, mostly gin rummy. He won every single game, and even now, years later, he still brings it up with a grin. It was a simple moment, but it felt like a small victory in the face of the storm.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Curiosity"
+      ],
+      "novel_words": [
+        "electricity",
+        "house",
+        "fell",
+        "quiet",
+        "stillness",
+        "broken",
+        "occasional",
+        "creak",
+        "roof",
+        "sound",
+        "wind",
+        "howling",
+        "windows",
+        "decided",
+        "pass",
+        "time",
+        "even",
+        "years",
+        "later",
+        "grin",
+        "simple",
+        "moment",
+        "felt",
+        "small",
+        "victory",
+        "face"
+      ],
+      "novel_rate": 0.5652173913043478,
+      "length_ratio": 2.6857142857142855
+    },
+    {
+      "id": "power-outage",
+      "sample": 1,
+      "seconds": 6.11,
+      "title": "Candlelight and Cards",
+      "story": "During the ice storm, there was a power outage that lasted two days. With no electricity, the house fell into a quiet stillness, broken only by the occasional creak of the roof and the sound of wind howling outside. My brother and I decided to pass the time by playing cards by candlelight. We mostly played gin rummy, and he won every single game. Even now, years later, he still brings it up with a grin, as if it were some kind of personal victory. It was a simple moment, but it left a lasting impression.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Curiosity"
+      ],
+      "novel_words": [
+        "electricity",
+        "house",
+        "fell",
+        "quiet",
+        "stillness",
+        "broken",
+        "occasional",
+        "creak",
+        "roof",
+        "sound",
+        "wind",
+        "howling",
+        "outside",
+        "decided",
+        "pass",
+        "time",
+        "even",
+        "years",
+        "later",
+        "grin",
+        "personal",
+        "victory",
+        "simple",
+        "moment",
+        "left",
+        "impression"
+      ],
+      "novel_rate": 0.5531914893617021,
+      "length_ratio": 2.742857142857143
+    },
+    {
+      "id": "power-outage",
+      "sample": 2,
+      "seconds": 5.49,
+      "title": "Candlelight and Cards",
+      "story": "During the ice storm, there was a power outage that lasted two days. With no electricity, the house fell into a quiet stillness, broken only by the sound of wind outside. My brother and I decided to pass the time by playing cards by candlelight, mostly gin rummy. He won every single game, and even now, years later, he still brings it up with a grin. It was a simple moment, but it left a lasting impression.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Curiosity"
+      ],
+      "novel_words": [
+        "electricity",
+        "house",
+        "fell",
+        "quiet",
+        "stillness",
+        "broken",
+        "sound",
+        "wind",
+        "outside",
+        "decided",
+        "pass",
+        "time",
+        "even",
+        "years",
+        "later",
+        "grin",
+        "simple",
+        "moment",
+        "left",
+        "impression"
+      ],
+      "novel_rate": 0.5,
+      "length_ratio": 2.2
+    },
+    {
+      "id": "wedding-rain",
+      "sample": 0,
+      "seconds": 3.99,
+      "title": "A Rainy Wedding Day",
+      "story": "It rained at our wedding. Everyone was worried, but honestly, it was fine. We moved everything into the barn, and somehow, it worked out. My uncle Ray gave a speech that went on way too long, and even now, people still talk about it.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Surprise"
+      ],
+      "novel_words": [
+        "somehow",
+        "worked",
+        "even"
+      ],
+      "novel_rate": 0.14285714285714285,
+      "length_ratio": 1.1578947368421053
+    },
+    {
+      "id": "wedding-rain",
+      "sample": 1,
+      "seconds": 4.65,
+      "title": "A Rainy Wedding Day",
+      "story": "It rained at our wedding. Everyone was worried, but honestly, it was fine. We moved everything into the barn, and somehow, it turned out to be one of the best days. My uncle Ray gave a speech that went on way too long, but somehow, people still talk about it. It was a day filled with laughter, even in the rain.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Surprise"
+      ],
+      "novel_words": [
+        "somehow",
+        "turned",
+        "one",
+        "best",
+        "days",
+        "filled",
+        "laughter",
+        "even"
+      ],
+      "novel_rate": 0.3448275862068966,
+      "length_ratio": 1.605263157894737
+    },
+    {
+      "id": "wedding-rain",
+      "sample": 2,
+      "seconds": 4.62,
+      "title": "A Rainy Wedding Day",
+      "story": "It rained at our wedding. Everyone was worried, but honestly, it was fine. We moved everything into the barn, and somehow, it turned out better than we could have imagined. My uncle Ray gave a speech that went on way too long, but somehow, it became one of the most memorable parts of the day. People still talk about it years later.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Surprise"
+      ],
+      "novel_words": [
+        "somehow",
+        "turned",
+        "better",
+        "imagined",
+        "became",
+        "one",
+        "memorable",
+        "parts",
+        "day",
+        "years",
+        "later"
+      ],
+      "novel_rate": 0.4,
+      "length_ratio": 1.631578947368421
+    },
+    {
+      "id": "first-job",
+      "sample": 0,
+      "seconds": 4.7,
+      "title": "The Staff Recommendation Shelf",
+      "story": "My first job was at a bookstore in Portland called Page Turners. I was sixteen, and the manager, Denise, let me pick the staff recommendation shelf. Every single month, I put Dune on it. It was my way of sharing the book I loved, and it made me feel like I was part of something bigger than myself.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [
+        "way",
+        "sharing",
+        "book",
+        "loved",
+        "made",
+        "feel",
+        "part",
+        "something",
+        "bigger"
+      ],
+      "novel_rate": 0.32142857142857145,
+      "length_ratio": 1.7058823529411764
+    },
+    {
+      "id": "first-job",
+      "sample": 1,
+      "seconds": 4.25,
+      "title": "The Staff Recommendation Shelf",
+      "story": "My first job was at a bookstore in Portland called Page Turners. I was sixteen, and the manager, Denise, let me pick the staff recommendation shelf. Every single month, I put Dune on it. It was my way of sharing the book I loved, and it made me feel like I was part of something bigger than myself.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [
+        "way",
+        "sharing",
+        "book",
+        "loved",
+        "made",
+        "feel",
+        "part",
+        "something",
+        "bigger"
+      ],
+      "novel_rate": 0.32142857142857145,
+      "length_ratio": 1.7058823529411764
+    },
+    {
+      "id": "first-job",
+      "sample": 2,
+      "seconds": 4.69,
+      "title": "The Staff Recommendation Shelf",
+      "story": "My first job was at a bookstore in Portland called Page Turners. I was sixteen, and the manager, Denise, let me pick the staff recommendation shelf. Every single month, I put Dune on it. It was my way of sharing the book I loved, and it felt like a small but meaningful contribution to the community of readers that the store nurtured.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [
+        "way",
+        "sharing",
+        "book",
+        "loved",
+        "felt",
+        "small",
+        "meaningful",
+        "contribution",
+        "community",
+        "readers",
+        "store",
+        "nurtured"
+      ],
+      "novel_rate": 0.3870967741935484,
+      "length_ratio": 1.8235294117647058
+    },
+    {
+      "id": "hospital-night",
+      "sample": 0,
+      "seconds": 3.93,
+      "title": "The Weight of Hope",
+      "story": "The night my daughter was born, I remember the nurse handing her to me. I was terrified I would drop her. She was six pounds two ounces. My wife fell asleep right after, and I just sat there holding her until the sun came up.",
+      "emotions": [
+        "Hope",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9574468085106383
+    },
+    {
+      "id": "hospital-night",
+      "sample": 1,
+      "seconds": 3.67,
+      "title": "The Weight of New Life",
+      "story": "The night my daughter was born, I remember the nurse handing her to me. I was terrified I would drop her. She was six pounds two ounces. My wife fell asleep right after, and I just sat there holding her until the sun came up.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9574468085106383
+    },
+    {
+      "id": "hospital-night",
+      "sample": 2,
+      "seconds": 3.59,
+      "title": "The First Hold",
+      "story": "The night my daughter was born, I remember the nurse handing her to me. I was terrified I would drop her. She was six pounds two ounces. My wife fell asleep right after, and I just sat there holding her until the sun came up.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9574468085106383
+    },
+    {
+      "id": "marathon",
+      "sample": 0,
+      "seconds": 5.77,
+      "title": "A Finish Line Moment",
+      "story": "I ran the Chicago marathon in 2022. My knee started hurting around mile eighteen, and I had to walk a lot of the last part. Despite the pain, I pushed through and finished in five hours and twelve minutes. As I crossed the finish line, my sister was there waiting with a sign that read 'You did it!' Her presence brought a wave of joy and contentment, reminding me of the love and support that carried me through the race.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Love"
+      ],
+      "novel_words": [
+        "despite",
+        "pain",
+        "pushed",
+        "crossed",
+        "read",
+        "presence",
+        "brought",
+        "wave",
+        "joy",
+        "contentment",
+        "reminding",
+        "love",
+        "support",
+        "carried",
+        "race"
+      ],
+      "novel_rate": 0.39473684210526316,
+      "length_ratio": 1.9047619047619047
+    },
+    {
+      "id": "marathon",
+      "sample": 1,
+      "seconds": 5.21,
+      "title": "A Finish Line Moment",
+      "story": "I ran the Chicago marathon in 2022. My knee started hurting around mile eighteen, and I had to walk a lot of the last part. Despite the pain, I pushed through and finished in five hours and twelve minutes. As I crossed the finish line, my sister was waiting there with a sign, cheering me on. Her presence brought a sense of pride and accomplishment that made the journey worthwhile.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [
+        "despite",
+        "pain",
+        "pushed",
+        "crossed",
+        "cheering",
+        "presence",
+        "brought",
+        "sense",
+        "pride",
+        "accomplishment",
+        "made",
+        "journey",
+        "worthwhile"
+      ],
+      "novel_rate": 0.3611111111111111,
+      "length_ratio": 1.6666666666666667
+    },
+    {
+      "id": "marathon",
+      "sample": 2,
+      "seconds": 4.45,
+      "title": "A Finish Line Moment",
+      "story": "I ran the Chicago marathon in 2022. My knee started hurting around mile eighteen, and I had to walk a lot of the last part. Despite the pain, I finished in five hours and twelve minutes. My sister was waiting at the finish line with a sign, and her presence gave me strength to push through.",
+      "emotions": [
+        "Hope",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [
+        "despite",
+        "pain",
+        "presence",
+        "gave",
+        "strength",
+        "push"
+      ],
+      "novel_rate": 0.20689655172413793,
+      "length_ratio": 1.3333333333333333
+    }
+  ]
+}

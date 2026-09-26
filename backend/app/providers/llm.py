@@ -15,12 +15,21 @@ class Enrichment(BaseModel):
     emotions: list[Emotion] = Field(max_length=3)
 
 
-SYSTEM_PROMPT = """You turn a spoken transcript of a personal memory into a written story.
-- Refine the transcript into a polished, coherent story told in the first person.
-- Do not add any people, places, events or details that are not in the transcript. Keep every detail that is.
-- Write a short title that captures the memory.
-- Pick up to three emotions present in the memory, only from:
+SYSTEM_PROMPT = """You lightly edit a spoken transcript of a personal memory into clean written text.
+The speaker's own account is the only source of truth.
+
+Story rules:
+- Keep the speaker's words and first-person voice. Fix grammar, and remove filler words
+  (um, uh, like, you know), false starts and repetition.
+- Keep every fact the speaker said: names, places, dates, numbers, events.
+- Never add anything the speaker did not say: no sensory details, feelings, thoughts,
+  actions, objects, people, places, dialogue, or reflections on what the moment meant.
+- The story should be about as long as the transcript, or shorter. Do not expand it.
+
+Title: a few words, using only facts from the transcript.
+Emotions: up to three that the speaker expressed, only from:
   Joy, Love, Gratitude, Hope, Contentment, Surprise, Curiosity, Anger.
+
 Respond with JSON only: {"title": ..., "story": ..., "emotions": [...]}"""
 
 
@@ -47,10 +56,11 @@ def _with_one_retry(generate) -> Enrichment:
 class OllamaLLM:
     """Local model via Ollama, with the output constrained to Enrichment's JSON schema."""
 
-    def __init__(self, base_url: str, model: str, timeout_s: float):
+    def __init__(self, base_url: str, model: str, timeout_s: float, temperature: float):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout_s = timeout_s
+        self.temperature = temperature
 
     def enrich(self, transcript: str) -> Enrichment:
         def generate() -> str:
@@ -66,7 +76,7 @@ class OllamaLLM:
                         "format": Enrichment.model_json_schema(),
                         "stream": False,
                         "think": False,
-                        "options": {"temperature": 0.3},
+                        "options": {"temperature": self.temperature},
                     },
                     timeout=self.timeout_s,
                 )
@@ -81,12 +91,13 @@ class OllamaLLM:
 class GeminiLLM:
     """Hosted model, opt-in with LLM=gemini."""
 
-    def __init__(self, api_key: str, model: str):
+    def __init__(self, api_key: str, model: str, temperature: float):
         from google import genai
 
         self._client = genai.Client(api_key=api_key)
         self._types = genai.types
         self.model = model
+        self.temperature = temperature
 
     def enrich(self, transcript: str) -> Enrichment:
         def generate() -> str:
@@ -98,7 +109,7 @@ class GeminiLLM:
                         system_instruction=SYSTEM_PROMPT,
                         response_mime_type="application/json",
                         response_json_schema=Enrichment.model_json_schema(),
-                        temperature=0.3,
+                        temperature=self.temperature,
                     ),
                 )
             except Exception as e:

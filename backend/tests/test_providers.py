@@ -31,7 +31,7 @@ def replies(monkeypatch):
 
 
 def llm() -> OllamaLLM:
-    return OllamaLLM("http://ollama", "test-model", timeout_s=5)
+    return OllamaLLM("http://ollama", "test-model", timeout_s=5, temperature=0)
 
 
 def enrichment_json(**overrides) -> str:

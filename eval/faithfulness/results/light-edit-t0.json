@@ -1,0 +1,466 @@
+{
+  "summary": {
+    "label": "light-edit-t0",
+    "model": "qwen3:8b",
+    "temperature": 0.0,
+    "samples_per_transcript": 3,
+    "stories": 30,
+    "mean_novel_rate": 0.0,
+    "median_novel_rate": 0.0,
+    "stories_with_0_novel_words": 30,
+    "mean_length_ratio": 0.97,
+    "mean_seconds": 3.42
+  },
+  "rows": [
+    {
+      "id": "grandma-pie",
+      "sample": 0,
+      "seconds": 3.93,
+      "title": "Baking with Grandmother",
+      "story": "Last summer I visited my grandmother in Lisbon. We baked an apple pie together. She laughed when I spilled flour all over the kitchen floor. I felt so grateful for that afternoon.",
+      "emotions": [
+        "Gratitude",
+        "Joy",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9696969696969697
+    },
+    {
+      "id": "grandma-pie",
+      "sample": 1,
+      "seconds": 2.84,
+      "title": "Baking with Grandmother",
+      "story": "Last summer I visited my grandmother in Lisbon. We baked an apple pie together. She laughed when I spilled flour all over the kitchen floor. I felt so grateful for that afternoon.",
+      "emotions": [
+        "Gratitude",
+        "Joy",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9696969696969697
+    },
+    {
+      "id": "grandma-pie",
+      "sample": 2,
+      "seconds": 2.87,
+      "title": "Baking with Grandmother",
+      "story": "Last summer I visited my grandmother in Lisbon. We baked an apple pie together. She laughed when I spilled flour all over the kitchen floor. I felt so grateful for that afternoon.",
+      "emotions": [
+        "Gratitude",
+        "Joy",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9696969696969697
+    },
+    {
+      "id": "first-bike",
+      "sample": 0,
+      "seconds": 4.03,
+      "title": "First Ride",
+      "story": "I was seven when my dad taught me to ride a bike. It was a red bike from a garage sale. We practiced in the church parking lot on Sundays and I fell like a hundred times. One day he let go and I didn't even notice, I just kept going.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.8947368421052632
+    },
+    {
+      "id": "first-bike",
+      "sample": 1,
+      "seconds": 3.7,
+      "title": "First Ride",
+      "story": "I was seven when my dad taught me to ride a bike. It was a red bike from a garage sale. We practiced in the church parking lot on Sundays and I fell like a hundred times. One day he let go and I didn't even notice, I just kept going.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.8947368421052632
+    },
+    {
+      "id": "first-bike",
+      "sample": 2,
+      "seconds": 3.74,
+      "title": "First Ride",
+      "story": "I was seven when my dad taught me to ride a bike. It was a red bike from a garage sale. We practiced in the church parking lot on Sundays and I fell like a hundred times. One day he let go and I didn't even notice, I just kept going.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.8947368421052632
+    },
+    {
+      "id": "moving-to-austin",
+      "sample": 0,
+      "seconds": 4.17,
+      "title": "Taco Place on South Congress",
+      "story": "When we moved to Austin in 2019 we didn't know anyone. My wife Priya found this taco place on South Congress and we basically went there every Friday for a year. The owner, Luis, started remembering our order. That's kind of when it started to feel like home.",
+      "emotions": [
+        "Contentment",
+        "Gratitude",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "moving-to-austin",
+      "sample": 1,
+      "seconds": 3.86,
+      "title": "Taco Place on South Congress",
+      "story": "When we moved to Austin in 2019 we didn't know anyone. My wife Priya found this taco place on South Congress and we basically went there every Friday for a year. The owner, Luis, started remembering our order. That's kind of when it started to feel like home.",
+      "emotions": [
+        "Contentment",
+        "Gratitude",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "moving-to-austin",
+      "sample": 2,
+      "seconds": 3.88,
+      "title": "Taco Place on South Congress",
+      "story": "When we moved to Austin in 2019 we didn't know anyone. My wife Priya found this taco place on South Congress and we basically went there every Friday for a year. The owner, Luis, started remembering our order. That's kind of when it started to feel like home.",
+      "emotions": [
+        "Contentment",
+        "Gratitude",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "exam-result",
+      "sample": 0,
+      "seconds": 3.15,
+      "title": "Bar Exam Results",
+      "story": "I remember checking my exam results on my phone at the bus stop. I passed. I passed the bar exam on the second try. I called my mom and she started crying before I even finished the sentence.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "exam-result",
+      "sample": 1,
+      "seconds": 2.94,
+      "title": "Bar Exam Results",
+      "story": "I remember checking my exam results on my phone at the bus stop. I passed. I passed the bar exam on the second try. I called my mom and she started crying before I even finished the sentence.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "exam-result",
+      "sample": 2,
+      "seconds": 3.03,
+      "title": "Bar Exam Results",
+      "story": "I remember checking my exam results on my phone at the bus stop. I passed. I passed the bar exam on the second try. I called my mom and she started crying before I even finished the sentence.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "dog-biscuit",
+      "sample": 0,
+      "seconds": 4.03,
+      "title": "Biscuit's First Three Weeks",
+      "story": "We adopted Biscuit from the shelter in March. He was scared of everything, the vacuum, the doorbell, even his own reflection. It took him about three weeks before he would sleep on the couch with us. Now he won't get off it.",
+      "emotions": [
+        "Contentment",
+        "Joy",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9767441860465116
+    },
+    {
+      "id": "dog-biscuit",
+      "sample": 1,
+      "seconds": 3.79,
+      "title": "Biscuit's First Three Weeks",
+      "story": "We adopted Biscuit from the shelter in March. He was scared of everything, the vacuum, the doorbell, even his own reflection. It took him about three weeks before he would sleep on the couch with us. Now he won't get off it.",
+      "emotions": [
+        "Contentment",
+        "Joy",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9767441860465116
+    },
+    {
+      "id": "dog-biscuit",
+      "sample": 2,
+      "seconds": 3.67,
+      "title": "Biscuit's First Three Weeks",
+      "story": "We adopted Biscuit from the shelter in March. He was scared of everything, the vacuum, the doorbell, even his own reflection. It took him about three weeks before he would sleep on the couch with us. Now he won't get off it.",
+      "emotions": [
+        "Contentment",
+        "Joy",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9767441860465116
+    },
+    {
+      "id": "power-outage",
+      "sample": 0,
+      "seconds": 3.26,
+      "title": "Power Outage and Cards",
+      "story": "There was a power outage during the ice storm, it lasted two days. My brother and I played cards by candlelight, mostly gin rummy. He won every single game and he still brings it up.",
+      "emotions": [
+        "Joy",
+        "Curiosity",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "power-outage",
+      "sample": 1,
+      "seconds": 3.04,
+      "title": "Power Outage and Cards",
+      "story": "There was a power outage during the ice storm, it lasted two days. My brother and I played cards by candlelight, mostly gin rummy. He won every single game and he still brings it up.",
+      "emotions": [
+        "Joy",
+        "Curiosity",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "power-outage",
+      "sample": 2,
+      "seconds": 3.01,
+      "title": "Power Outage and Cards",
+      "story": "There was a power outage during the ice storm, it lasted two days. My brother and I played cards by candlelight, mostly gin rummy. He won every single game and he still brings it up.",
+      "emotions": [
+        "Joy",
+        "Curiosity",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "wedding-rain",
+      "sample": 0,
+      "seconds": 3.32,
+      "title": "Wedding in the Barn",
+      "story": "It rained at our wedding. Everyone was worried, but it was fine. We moved everything into the barn. My uncle Ray gave a speech that went on way too long. People still talk about it.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9210526315789473
+    },
+    {
+      "id": "wedding-rain",
+      "sample": 1,
+      "seconds": 3.18,
+      "title": "Wedding in the Barn",
+      "story": "It rained at our wedding. Everyone was worried, but it was fine. We moved everything into the barn. My uncle Ray gave a speech that went on way too long. People still talk about it.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9210526315789473
+    },
+    {
+      "id": "wedding-rain",
+      "sample": 2,
+      "seconds": 3.11,
+      "title": "Wedding in the Barn",
+      "story": "It rained at our wedding. Everyone was worried, but it was fine. We moved everything into the barn. My uncle Ray gave a speech that went on way too long. People still talk about it.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Surprise"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9210526315789473
+    },
+    {
+      "id": "first-job",
+      "sample": 0,
+      "seconds": 3.12,
+      "title": "Staff Recommendation Shelf",
+      "story": "My first job was at a bookstore in Portland called Page Turners. I was sixteen. The manager, Denise, let me pick the staff recommendation shelf and I put Dune on it every single month.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "first-job",
+      "sample": 1,
+      "seconds": 2.92,
+      "title": "Staff Recommendation Shelf",
+      "story": "My first job was at a bookstore in Portland called Page Turners. I was sixteen. The manager, Denise, let me pick the staff recommendation shelf and I put Dune on it every single month.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "first-job",
+      "sample": 2,
+      "seconds": 2.86,
+      "title": "Staff Recommendation Shelf",
+      "story": "My first job was at a bookstore in Portland called Page Turners. I was sixteen. The manager, Denise, let me pick the staff recommendation shelf and I put Dune on it every single month.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "hospital-night",
+      "sample": 0,
+      "seconds": 3.58,
+      "title": "The Night My Daughter Was Born",
+      "story": "The night my daughter was born, the nurse handed her to me and I was terrified I would drop her. She was six pounds two ounces. My wife fell asleep right after and I just sat there holding her until the sun came up.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9361702127659575
+    },
+    {
+      "id": "hospital-night",
+      "sample": 1,
+      "seconds": 3.27,
+      "title": "The Night My Daughter Was Born",
+      "story": "The night my daughter was born, the nurse handed her to me and I was terrified I would drop her. She was six pounds two ounces. My wife fell asleep right after and I just sat there holding her until the sun came up.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9361702127659575
+    },
+    {
+      "id": "hospital-night",
+      "sample": 2,
+      "seconds": 3.37,
+      "title": "The Night My Daughter Was Born",
+      "story": "The night my daughter was born, the nurse handed her to me and I was terrified I would drop her. She was six pounds two ounces. My wife fell asleep right after and I just sat there holding her until the sun came up.",
+      "emotions": [
+        "Joy",
+        "Contentment",
+        "Gratitude"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 0.9361702127659575
+    },
+    {
+      "id": "marathon",
+      "sample": 0,
+      "seconds": 3.8,
+      "title": "Chicago Marathon 2022",
+      "story": "I ran the Chicago marathon in 2022. My knee started hurting around mile eighteen. I walked a lot of the last part but I finished in five hours and twelve minutes. My sister was waiting at the finish line with a sign.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "marathon",
+      "sample": 1,
+      "seconds": 3.59,
+      "title": "Chicago Marathon 2022",
+      "story": "I ran the Chicago marathon in 2022. My knee started hurting around mile eighteen. I walked a lot of the last part but I finished in five hours and twelve minutes. My sister was waiting at the finish line with a sign.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    },
+    {
+      "id": "marathon",
+      "sample": 2,
+      "seconds": 3.51,
+      "title": "Chicago Marathon 2022",
+      "story": "I ran the Chicago marathon in 2022. My knee started hurting around mile eighteen. I walked a lot of the last part but I finished in five hours and twelve minutes. My sister was waiting at the finish line with a sign.",
+      "emotions": [
+        "Joy",
+        "Gratitude",
+        "Contentment"
+      ],
+      "novel_words": [],
+      "novel_rate": 0.0,
+      "length_ratio": 1.0
+    }
+  ]
+}

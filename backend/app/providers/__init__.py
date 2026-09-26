@@ -21,5 +21,5 @@ def get_llm() -> LLM:
     if s.llm == "gemini":
         if not s.gemini_api_key:
             raise RuntimeError("LLM=gemini needs GEMINI_API_KEY")
-        return GeminiLLM(s.gemini_api_key, s.gemini_model)
-    return OllamaLLM(s.ollama_url, s.ollama_model, s.llm_timeout_s)
+        return GeminiLLM(s.gemini_api_key, s.gemini_model, s.llm_temperature)
+    return OllamaLLM(s.ollama_url, s.ollama_model, s.llm_timeout_s, s.llm_temperature)

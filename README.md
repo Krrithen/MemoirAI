@@ -8,10 +8,12 @@ Started as a 2-day prototype in April 2025; now being rebuilt as a local-first m
 
 1. Record audio in the browser, optionally attaching a photo or video.
 2. The backend transcribes the audio locally with [faster-whisper](https://github.com/SYSTRAN/faster-whisper).
-3. A local model served by [Ollama](https://ollama.com) (default `qwen3:8b`) writes a title and story from the transcript and tags it with up to three emotions from a fixed list. Output is constrained to a JSON schema and validated.
+3. A local model served by [Ollama](https://ollama.com) (default `qwen3:8b`) lightly edits the transcript into a clean story (removing filler, never adding details the speaker didn't say), writes a title, and tags up to three emotions from a fixed list. Output is constrained to a JSON schema and validated.
 4. Media is stored on local disk under its SHA-256 hash; the memory is saved to Postgres and shown in a gallery.
 
 If the recording has no speech, the request fails with a clear error and nothing is stored. A story is never generated without a transcript.
+
+How faithful the stories are is measured, not assumed: on 10 test transcripts the model added never-said words to 23 of 30 stories with the original prompt, and to 0 of 30 after the fix. See [docs/results/faithfulness.md](docs/results/faithfulness.md); rerun with `uv run --project backend python eval/faithfulness/run.py --label <name>`.
 
 ## Tech stack
 
