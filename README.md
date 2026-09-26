@@ -43,7 +43,7 @@ The Whisper model (`small` by default) downloads on the first transcription and 
 
 `GET /api/health` reports that the API process is up; `GET /api/ready` also checks the database (2 s timeout) and returns 503 if it's unreachable.
 
-Lint with `uv run ruff check .` from `backend/`.
+From `backend/`: `uv run pytest` runs the tests (needs `docker compose up -d`; they use a throwaway `memoir_test` database and fake models), and `uv run ruff check .` lints.
 
 ## Configuration
 
