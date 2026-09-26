@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import MemoryDisplay from "./components/MemoryDisplay";
 import MemoriesGallery from "./components/MemoriesGallery";
 import MediaUpload from "./components/MediaUpload";
 import VoiceRecorder from "./components/VoiceRecorder";
-import ElevenLabsConvai from "./components/ElevenLabsConvai";
 import memoirLogo from "./MemoirAI.png";
 import "./index.css";
 
 function App() {
-  const [memory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [mediaFile, setMediaFile] = useState(null);
@@ -69,40 +66,33 @@ function App() {
 
           {/* Foreground Content */}
           <div className="relative z-10 h-full">
-            {memory ? (
-              <MemoryDisplay memory={memory} />
-            ) : (
-              <div className="text-center text-gray-300 mt-20 space-y-4">
-                <img
-                  src={memoirLogo}
-                  alt="Memoir AI Logo"
-                  className="mx-auto w-48 h-48 mb-2 mt-0"
-                />
-                <h1 className="text-1xl md:text-2xl lg:text-3xl font-semibold leading-tight tracking-wide text-white">
-                  Your Personalized AI with Memories
-                </h1>
-                <p className="text-sm md:text-base lg:text-lg font-light text-gray-400 max-w-xs mx-auto">
-                  An AI that remembers everything — built from the life you've
-                  lived.
-                </p>
-                <ul className="text-sm md:text-base text-gray-300 pt-6 pb-5 space-y-2 list-none">
-                  <li>📸 Upload a photo or video</li>
-                  <li>🎙️ Record or upload your voice</li>
-                  <li>🧠 Our AI processes your memories</li>
-                  <li>❤️ Relive your memories!</li>
-                </ul>
-                <div className="pt-2 w-full max-w-md mx-auto">
-                  <ElevenLabsConvai />
-                </div>
-              </div>
-            )}
+            <div className="text-center text-gray-300 mt-20 space-y-4">
+              <img
+                src={memoirLogo}
+                alt="Memoir AI Logo"
+                className="mx-auto w-48 h-48 mb-2 mt-0"
+              />
+              <h1 className="text-1xl md:text-2xl lg:text-3xl font-semibold leading-tight tracking-wide text-white">
+                Your Personalized AI with Memories
+              </h1>
+              <p className="text-sm md:text-base lg:text-lg font-light text-gray-400 max-w-xs mx-auto">
+                An AI that remembers everything — built from the life you've
+                lived.
+              </p>
+              <ul className="text-sm md:text-base text-gray-300 pt-6 pb-5 space-y-2 list-none">
+                <li>📸 Upload a photo or video</li>
+                <li>🎙️ Record or upload your voice</li>
+                <li>🧠 Our AI processes your memories</li>
+                <li>❤️ Relive your memories!</li>
+              </ul>
+            </div>
           </div>
         </div>
 
         {/* Right Section (Scrollable) */}
         <div className="w-3/4 h-screen overflow-y-auto p-4 bg-[#0a0f1c] shadow-xl">
           <div className="max-w-7xl mx-auto flex-grow">
-            {memory ? <MemoryDisplay memory={memory} /> : <MemoriesGallery />}
+            <MemoriesGallery />
           </div>
         </div>
       </div>

@@ -73,7 +73,6 @@ const MemoriesGallery = () => {
                 <h3 className="text-white text-lg font-semibold mb-2">
                   {memory.title}
                 </h3>
-                {/* <p className="text-white text-sm">{memory.story}</p> */}
               </div>
             </div>
 
@@ -166,19 +165,6 @@ const MemoriesGallery = () => {
                   ))}
                 </div>
               </div>
-
-              {selectedMemory.isComicAvailable && selectedMemory.comicUrl && (
-                <div className="mt-4">
-                  <a
-                    href={selectedMemory.comicUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline text-sm"
-                  >
-                    View Comic Version
-                  </a>
-                </div>
-              )}
             </div>
           </div>
         </div>
