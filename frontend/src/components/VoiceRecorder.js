@@ -34,7 +34,7 @@ const VoiceRecorder = ({ onAudioCapture }) => {
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Record Voice (optional)
+        Record Voice
       </label>
       {!recording ? (
         <button

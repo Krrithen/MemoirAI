@@ -12,6 +12,10 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
+# Start Postgres
+echo "Starting Postgres..."
+docker compose up -d
+
 # Set up the backend
 echo "Setting up the backend..."
 cd backend

@@ -3,6 +3,7 @@ import MemoriesGallery from "./components/MemoriesGallery";
 import MediaUpload from "./components/MediaUpload";
 import VoiceRecorder from "./components/VoiceRecorder";
 import memoirLogo from "./MemoirAI.png";
+import { API_URL } from "./config";
 import "./index.css";
 
 function App() {
@@ -27,25 +28,26 @@ function App() {
       }
 
       if (audioBlob) {
-        const audioFile = new File([audioBlob], "recording.wav", {
-          type: "audio/wav",
+        const audioFile = new File([audioBlob], "recording.webm", {
+          type: "audio/webm",
         });
         formData.append("audio", audioFile);
       }
 
-      const response = await fetch("http://127.0.0.1:8000/api/memories", {
+      const response = await fetch(`${API_URL}/api/memories`, {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error(`Failed with status ${response.status}`);
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.detail || `Failed with status ${response.status}`);
       }
 
       alert("✅ Memory uploaded successfully!");
     } catch (error) {
       console.error("Error uploading memory:", error);
-      alert("❌ There was an error uploading your memory.");
+      alert(`❌ Couldn't save your memory: ${error.message}`);
     } finally {
       setLoading(false);
     }

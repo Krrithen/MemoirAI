@@ -23,9 +23,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Runtime media (temp transcription files, generated output)
-backend/audio/
-backend/generated_image.png
+# Local media store
+backend/data/
 
 # OS / editor
 .DS_Store

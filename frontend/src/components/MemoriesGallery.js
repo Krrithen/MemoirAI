@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { API_URL } from "../config";
 
 const MemoriesGallery = () => {
   const [memories, setMemories] = useState([]);
@@ -9,7 +10,7 @@ const MemoriesGallery = () => {
   useEffect(() => {
     const fetchMemories = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/memories");
+        const response = await fetch(`${API_URL}/api/memories`);
         const data = await response.json();
         setMemories(data.memories);
       } catch (error) {
@@ -133,7 +134,7 @@ const MemoriesGallery = () => {
               {selectedMemory.audioUrl && (
                 <div className="mt-4 w-full px-2">
                   <audio ref={audioRef} controls className="w-full">
-                    <source src={selectedMemory.audioUrl} type="audio/wav" />
+                    <source src={selectedMemory.audioUrl} />
                     Your browser does not support the audio element.
                   </audio>
                 </div>

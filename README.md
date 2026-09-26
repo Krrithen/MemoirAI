@@ -1,41 +1,61 @@
 # Memoir AI
 
-Record a voice memory and Memoir AI turns it into a titled, tagged story you can browse later.
+Record a voice memory and Memoir AI turns it into a titled, tagged story you can browse later. Everything runs on your own machine: no API keys, no cloud services.
 
 Started as a 2-day prototype in April 2025; now being rebuilt as a local-first memory engine.
 
 ## What it does today
 
 1. Record audio in the browser, optionally attaching a photo or video.
-2. The backend stores the media in Supabase Storage and transcribes the audio with AssemblyAI.
-3. Gemini turns the transcript into a title and story, and tags it with up to three emotions from a fixed list.
-4. The memory is saved to MongoDB and shown in a gallery.
+2. The backend transcribes the audio locally with [faster-whisper](https://github.com/SYSTRAN/faster-whisper).
+3. A local model served by [Ollama](https://ollama.com) (default `qwen3:8b`) writes a title and story from the transcript and tags it with up to three emotions from a fixed list. Output is constrained to a JSON schema and validated.
+4. Media is stored on local disk under its SHA-256 hash; the memory is saved to Postgres and shown in a gallery.
+
+If the recording has no speech, the request fails with a clear error and nothing is stored. A story is never generated without a transcript.
 
 ## Tech stack
 
 - **Frontend:** React, Tailwind CSS
-- **Backend:** Python, FastAPI
-- **Services:** MongoDB, Supabase Storage, AssemblyAI, Google Gemini
+- **Backend:** Python, FastAPI, Postgres (psycopg)
+- **Models:** faster-whisper (speech to text), Ollama (story and tags)
 
 ## Running locally
 
-Create `backend/.env` with `MONGO_URL`, `SUPABASE_URL`, `SUPABASE_KEY`, `ASSEMBLYAI_API_KEY` and `GEMINI_API_KEY`.
+Prerequisites: Python 3.11+, Node 18+, Docker, and [Ollama](https://ollama.com/download).
 
 ```bash
-# Backend
+# Model and database
+ollama pull qwen3:8b
+docker compose up -d
+
+# Backend (http://localhost:8000)
 cd backend
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 
-# Frontend
+# Frontend (http://localhost:3000)
 cd frontend
 npm install
 npm start
 ```
 
-`run_project.sh` starts both. The frontend expects the API at `http://localhost:8000`.
+The Whisper model (`small` by default) downloads on the first transcription and is cached after that.
+
+## Configuration
+
+Every setting has a local default, so no `.env` is needed. Override with environment variables:
+
+| Variable | Default |
+|---|---|
+| `DATABASE_URL` | `postgresql://memoir:memoir@localhost:5433/memoir` |
+| `MEDIA_DIR` | `data/media` |
+| `OLLAMA_MODEL` | `qwen3:8b` |
+| `WHISPER_MODEL` | `small` |
+| `REACT_APP_API_URL` (frontend) | `http://localhost:8000` |
+
+Hosted providers are optional and off by default, kept for comparing against the local path: set `TRANSCRIBER=assemblyai` with `ASSEMBLYAI_API_KEY`, or `LLM=gemini` with `GEMINI_API_KEY`, after `pip install -r requirements-hosted.txt`.
 
 ## License
 
