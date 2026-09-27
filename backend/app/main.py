@@ -47,6 +47,8 @@ def _to_api(row: dict, request: Request) -> dict:
         "imageUrl": url(row["image_sha256"]),
         "title": row["title"],
         "story": row["story"],
+        "transcript": row["transcript"],
+        "storyStyle": row["story_style"],
         "tags": row["emotions"],
         "timestamp": row["created_at"].isoformat(),
     }
@@ -116,8 +118,9 @@ def create_memory(
                 (u.sha256, u.content_type, len(u.data)),
             )
         row = conn.execute(
-            "INSERT INTO memories (audio_sha256, video_sha256, image_sha256, transcript, title, story, emotions)"
-            " VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING *",
+            "INSERT INTO memories"
+            " (audio_sha256, video_sha256, image_sha256, transcript, title, story, emotions, story_style)"
+            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *",
             (
                 audio_up.sha256,
                 video_up.sha256 if video_up else None,
@@ -126,6 +129,7 @@ def create_memory(
                 enrichment.title,
                 enrichment.story,
                 enrichment.emotions,
+                settings.story_style,
             ),
         ).fetchone()
 

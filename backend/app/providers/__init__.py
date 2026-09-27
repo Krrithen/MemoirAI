@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 from app.config import get_settings
-from app.providers.llm import LLM, GeminiLLM, OllamaLLM
+from app.providers.llm import DEFAULT_TEMPERATURE, LLM, PROMPTS, GeminiLLM, OllamaLLM
 from app.providers.transcriber import AssemblyAITranscriber, FasterWhisperTranscriber, Transcriber
 
 
@@ -18,8 +18,10 @@ def get_transcriber() -> Transcriber:
 @lru_cache
 def get_llm() -> LLM:
     s = get_settings()
+    prompt = PROMPTS[s.story_style]
+    temperature = s.llm_temperature if s.llm_temperature is not None else DEFAULT_TEMPERATURE[s.story_style]
     if s.llm == "gemini":
         if not s.gemini_api_key:
             raise RuntimeError("LLM=gemini needs GEMINI_API_KEY")
-        return GeminiLLM(s.gemini_api_key, s.gemini_model, s.llm_temperature)
-    return OllamaLLM(s.ollama_url, s.ollama_model, s.llm_timeout_s, s.llm_temperature)
+        return GeminiLLM(s.gemini_api_key, s.gemini_model, temperature, prompt)
+    return OllamaLLM(s.ollama_url, s.ollama_model, s.llm_timeout_s, temperature, prompt)

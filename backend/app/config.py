@@ -29,7 +29,9 @@ class Settings(BaseSettings):
     ollama_url: str = "http://localhost:11434"
     ollama_model: str = "qwen3:8b"
     llm_timeout_s: float = 120.0
-    llm_temperature: float = 0.0
+    # creative: vivid retelling that may add atmosphere; faithful: light edit that adds nothing
+    story_style: Literal["creative", "faithful"] = "creative"
+    llm_temperature: float | None = None  # None = the story style's default
 
     assemblyai_api_key: str | None = None
     gemini_api_key: str | None = None

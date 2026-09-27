@@ -18,4 +18,7 @@ CREATE TABLE IF NOT EXISTS memories (
     created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Which prompt wrote the story: 'creative' (may add atmosphere) or 'faithful' (adds nothing).
+ALTER TABLE memories ADD COLUMN IF NOT EXISTS story_style TEXT NOT NULL DEFAULT 'creative';
+
 CREATE INDEX IF NOT EXISTS memories_created_at_idx ON memories (created_at DESC);

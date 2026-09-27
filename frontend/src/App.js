@@ -1,56 +1,19 @@
 import React, { useState } from "react";
+import CreateMemory from "./components/CreateMemory";
 import MemoriesGallery from "./components/MemoriesGallery";
-import MediaUpload from "./components/MediaUpload";
-import VoiceRecorder from "./components/VoiceRecorder";
+import MemoryDetail from "./components/MemoryDetail";
 import memoirLogo from "./MemoirAI.png";
-import { API_URL } from "./config";
 import "./index.css";
 
 function App() {
-  const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [mediaFile, setMediaFile] = useState(null);
-  const [audioBlob, setAudioBlob] = useState(null);
+  const [creating, setCreating] = useState(false);
+  const [selectedMemory, setSelectedMemory] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleMemorySubmit = async () => {
-    setLoading(true);
-    try {
-      const formData = new FormData();
-
-      if (mediaFile) {
-        if (mediaFile.type.startsWith("video")) {
-          formData.append("video", mediaFile);
-        } else if (mediaFile.type.startsWith("image")) {
-          formData.append("image", mediaFile);
-        } else {
-          console.warn("Unsupported media type:", mediaFile.type);
-        }
-      }
-
-      if (audioBlob) {
-        const audioFile = new File([audioBlob], "recording.webm", {
-          type: "audio/webm",
-        });
-        formData.append("audio", audioFile);
-      }
-
-      const response = await fetch(`${API_URL}/api/memories`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.detail || `Failed with status ${response.status}`);
-      }
-
-      alert("✅ Memory uploaded successfully!");
-    } catch (error) {
-      console.error("Error uploading memory:", error);
-      alert(`❌ Couldn't save your memory: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
+  const handleCreated = (memory) => {
+    setCreating(false);
+    setRefreshKey((k) => k + 1);
+    setSelectedMemory(memory);
   };
 
   return (
@@ -94,71 +57,21 @@ function App() {
         {/* Right Section (Scrollable) */}
         <div className="w-3/4 h-screen overflow-y-auto p-4 bg-[#0a0f1c] shadow-xl">
           <div className="max-w-7xl mx-auto flex-grow">
-            <MemoriesGallery />
+            <MemoriesGallery refreshKey={refreshKey} onSelect={setSelectedMemory} />
           </div>
         </div>
       </div>
 
       {/* Floating Create Memory Button */}
       <button
-        onClick={() => setShowModal(true)}
-        className="fixed bottom-6 right-6 bg-blue-500 text-white px-5 py-3 rounded-full shadow-lg hover:bg-blue-700 transition z-50"
+        onClick={() => setCreating(true)}
+        className="fixed bottom-6 right-6 bg-blue-500 text-white px-5 py-3 rounded-full shadow-lg hover:bg-blue-700 transition z-40"
       >
         + Create Memory
       </button>
 
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
-          <div className="w-3/5 bg-white p-8 rounded-xl shadow-xl relative">
-            <h2 className="text-xl font-semibold text-center mb-4">
-              Create a New Memory
-            </h2>
-
-            <MediaUpload onMediaSelect={(file) => setMediaFile(file)} />
-
-            {mediaFile && (
-              <div className="mt-4 mb-6 text-center">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Preview
-                </h3>
-                {mediaFile.type.startsWith("video") ? (
-                  <video
-                    src={URL.createObjectURL(mediaFile)}
-                    controls
-                    className="w-48 h-auto mx-auto rounded"
-                  />
-                ) : (
-                  <img
-                    src={URL.createObjectURL(mediaFile)}
-                    alt="Uploaded"
-                    className="w-48 h-auto mx-auto rounded"
-                  />
-                )}
-              </div>
-            )}
-
-            <VoiceRecorder onAudioCapture={(blob) => setAudioBlob(blob)} />
-
-            <div className="text-center mt-6">
-              <button
-                onClick={handleMemorySubmit}
-                className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-                disabled={loading}
-              >
-                {loading ? "Processing..." : "Transform Memory"}
-              </button>
-            </div>
-
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-              onClick={() => setShowModal(false)}
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
+      {creating && <CreateMemory onClose={() => setCreating(false)} onCreated={handleCreated} />}
+      {selectedMemory && <MemoryDetail memory={selectedMemory} onClose={() => setSelectedMemory(null)} />}
     </>
   );
 }

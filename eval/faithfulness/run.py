@@ -56,7 +56,8 @@ def main() -> None:
     summary = {
         "label": args.label,
         "model": settings.ollama_model if settings.llm == "ollama" else settings.gemini_model,
-        "temperature": settings.llm_temperature,
+        "story_style": settings.story_style,
+        "temperature": llm.temperature,
         "samples_per_transcript": args.samples,
         "stories": len(rows),
         "mean_novel_rate": round(statistics.mean(rates), 3),

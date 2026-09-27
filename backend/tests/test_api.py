@@ -30,6 +30,8 @@ def test_create_memory_stores_and_lists_it(client, transcriber, llm):
     memory = resp.json()
     assert memory["title"] == "Apple Pie in Lisbon"
     assert memory["tags"] == ["Joy", "Love"]
+    assert memory["transcript"] == TRANSCRIPT
+    assert memory["storyStyle"] == "creative"
     assert memory["audioUrl"] and memory["imageUrl"] and memory["videoUrl"] == ""
 
     listed = client.get("/api/memories").json()["memories"]
