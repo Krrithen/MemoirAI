@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS memories (
     status           TEXT NOT NULL DEFAULT 'pending'
                      CHECK (status IN ('pending', 'transcribed', 'ready', 'failed')),
     error            TEXT,
+    failed_stage     TEXT,                  -- the stage a failed memory stopped at
     transcript       TEXT CHECK (length(btrim(transcript)) > 0),
     title            TEXT,
     story            TEXT,

@@ -2,6 +2,7 @@ import hashlib
 import os
 import tempfile
 from dataclasses import dataclass
+from functools import cached_property
 from pathlib import Path
 
 from fastapi import HTTPException, UploadFile
@@ -15,7 +16,7 @@ class Upload:
     content_type: str
     filename: str
 
-    @property
+    @cached_property
     def sha256(self) -> str:
         return hashlib.sha256(self.data).hexdigest()
 
@@ -37,20 +38,36 @@ def media_path(sha256: str) -> Path:
 
 
 def write_media(upload: Upload) -> str:
-    """Write bytes under their SHA-256. Idempotent: same bytes, same file."""
+    """Write bytes under their SHA-256, durably. Idempotent: same bytes, same file.
+
+    An existing file is trusted only if its size matches; a truncated one (e.g. from a
+    crash on a filesystem that reordered writes) is rewritten.
+    """
     sha = upload.sha256
     path = media_path(sha)
-    if path.exists():
+    if path.exists() and path.stat().st_size == len(upload.data):
         return sha
     path.parent.mkdir(parents=True, exist_ok=True)
-    # Write to a temp file in the same directory, then rename atomically,
-    # so a crash never leaves a half-written file under the final name.
+    # Write to a temp file in the same directory, fsync it, then rename atomically and
+    # fsync the directory, so after a crash the final name holds either nothing or all
+    # the bytes, and the rename itself survives a power loss.
     fd, tmp = tempfile.mkstemp(dir=path.parent)
     try:
         with os.fdopen(fd, "wb") as f:
             f.write(upload.data)
+            f.flush()
+            os.fsync(f.fileno())
         os.replace(tmp, path)
     except BaseException:
         Path(tmp).unlink(missing_ok=True)
         raise
+    _fsync_dir(path.parent)
     return sha
+
+
+def _fsync_dir(directory: Path) -> None:
+    fd = os.open(directory, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)

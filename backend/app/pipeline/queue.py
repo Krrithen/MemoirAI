@@ -65,6 +65,17 @@ def _still_owned(conn: Connection, job: Job, worker_id: str) -> bool:
     )
 
 
+def heartbeat(job: Job, worker_id: str) -> bool:
+    """Extend the lease while a stage is still running. Returns False if the lease was lost."""
+    with db.connect() as conn:
+        row = conn.execute(
+            "UPDATE jobs SET lease_until = now() + make_interval(secs => %s)"
+            " WHERE id = %s AND locked_by = %s AND attempts = %s AND lease_until > now() RETURNING id",
+            (get_settings().job_lease_s, job.id, worker_id, job.attempts),
+        ).fetchone()
+    return row is not None
+
+
 def complete_transcribe(job: Job, worker_id: str, transcript: str) -> bool:
     with db.connect() as conn:
         if not _still_owned(conn, job, worker_id):
@@ -87,7 +98,7 @@ def complete_enrich(job: Job, worker_id: str, enrichment: Enrichment, story_styl
             return False
         conn.execute(
             "UPDATE memories SET title = %s, story = %s, emotions = %s, story_style = %s,"
-            " status = 'ready', error = NULL, updated_at = now() WHERE id = %s",
+            " status = 'ready', error = NULL, failed_stage = NULL, updated_at = now() WHERE id = %s",
             (enrichment.title, enrichment.story, enrichment.emotions, story_style, job.memory_id),
         )
         conn.execute("DELETE FROM jobs WHERE id = %s", (job.id,))
@@ -132,7 +143,7 @@ def give_up(job: Job, worker_id: str) -> bool:
 
 def _dead_letter(conn: Connection, job: Job, reason: str) -> None:
     conn.execute(
-        "UPDATE memories SET status = 'failed', error = %s, updated_at = now() WHERE id = %s",
-        (reason, job.memory_id),
+        "UPDATE memories SET status = 'failed', error = %s, failed_stage = %s, updated_at = now() WHERE id = %s",
+        (reason, job.stage, job.memory_id),
     )
     conn.execute("DELETE FROM jobs WHERE id = %s", (job.id,))

@@ -8,7 +8,11 @@ logger = logging.getLogger(__name__)
 
 
 class TranscriptionFailed(Exception):
-    """Raised when audio can't be turned into text. Never swallowed into ''."""
+    """The recording itself can't be transcribed (no speech, or not decodable audio).
+
+    Permanent: retrying won't help. Anything else a transcriber raises (network, model
+    download, out of memory) is left to propagate so the worker retries it.
+    """
 
 
 class Transcriber(Protocol):
@@ -47,15 +51,18 @@ class FasterWhisperTranscriber:
         return WhisperModel(self.model_size, device="cpu", compute_type=self.compute_type)
 
     def transcribe(self, audio: bytes, suffix: str) -> str:
-        def run(path: str) -> str:
-            segments, _info = self._model.transcribe(path, vad_filter=True)
-            return " ".join(s.text.strip() for s in segments)
+        import av
+        from faster_whisper import decode_audio
 
+        # Decode before loading the model: a decode error means the file is bad (permanent),
+        # while errors loading or running the model are environmental (retried).
         try:
-            text = _with_temp_file(audio, suffix, run)
-        except Exception as e:
-            raise TranscriptionFailed(f"faster-whisper failed: {e}") from e
-        return _require_text(text)
+            samples = _with_temp_file(audio, suffix, decode_audio)
+        except av.error.FFmpegError as e:
+            raise TranscriptionFailed(f"Couldn't decode the recording: {e}") from e
+
+        segments, _info = self._model.transcribe(samples, vad_filter=True)
+        return _require_text(" ".join(s.text.strip() for s in segments))
 
 
 class AssemblyAITranscriber:
@@ -68,10 +75,9 @@ class AssemblyAITranscriber:
         self._aai = aai
 
     def transcribe(self, audio: bytes, suffix: str) -> str:
-        try:
-            transcript = _with_temp_file(audio, suffix, self._aai.Transcriber().transcribe)
-        except Exception as e:
-            raise TranscriptionFailed(f"AssemblyAI failed: {e}") from e
+        # Network and HTTP errors propagate and are retried; an error status on the
+        # transcript means AssemblyAI rejected the audio itself.
+        transcript = _with_temp_file(audio, suffix, self._aai.Transcriber().transcribe)
         if transcript.status == self._aai.TranscriptStatus.error:
             raise TranscriptionFailed(f"AssemblyAI failed: {transcript.error}")
         return _require_text(transcript.text)

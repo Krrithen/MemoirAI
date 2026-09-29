@@ -68,6 +68,7 @@ def test_database():
         admin.execute(f"CREATE DATABASE {TEST_DB}")
     db.init_schema()
     yield
+    db.close_pool()
     with psycopg.connect(ADMIN_URL, autocommit=True) as admin:
         admin.execute(f"DROP DATABASE IF EXISTS {TEST_DB} WITH (FORCE)")
     shutil.rmtree(MEDIA_DIR, ignore_errors=True)

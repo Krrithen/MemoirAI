@@ -66,3 +66,30 @@ def test_reupload_after_gc_restores_the_file(client):
 
     memory = client.post("/api/memories", files={"audio": ("r.webm", data, "audio/webm")}).json()
     assert client.get(memory["audioUrl"]).content == data
+
+
+def test_gc_never_deletes_media_that_a_concurrent_upload_starts_using(client):
+    """Race: a memory referencing old, unreferenced media commits while GC is deleting it."""
+    import threading
+
+    import psycopg
+
+    from tests.conftest import TEST_URL
+
+    sha = add_unreferenced_media(b"about to be reused")
+    age_media(sha)
+
+    with psycopg.connect(TEST_URL) as uploader:
+        # The upload's transaction references the media first (and holds the FK lock)...
+        uploader.execute("INSERT INTO memories (audio_sha256) VALUES (%s)", (sha,))
+        results = []
+        collector = threading.Thread(target=lambda: results.append(gc.collect_garbage()))
+        collector.start()  # ...GC's DELETE blocks on that lock
+        collector.join(timeout=0.5)
+        assert collector.is_alive()
+        uploader.commit()  # the upload commits; GC must not delete the now-referenced row
+        collector.join(timeout=5)
+
+    assert results and (results[0].get("skipped") or results[0]["rows"] == 0)
+    assert count("media") == 1
+    assert media_path(sha).exists()

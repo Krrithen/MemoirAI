@@ -141,3 +141,97 @@ def test_concurrent_claims_never_share_a_job(client):
     assert len(jobs) == 3
     assert {str(j.memory_id) for j in jobs} == ids
     assert claimed[3] is None
+
+
+# --- Week 4 hardening --------------------------------------------------------------
+
+
+def test_loop_backs_off_and_keeps_going_when_the_database_is_down(monkeypatch):
+    import psycopg
+
+    outcomes = [psycopg.OperationalError("connection refused")] * 3 + [True, False]
+    calls, sleeps = [], []
+
+    def fake_run_once(worker_id):
+        calls.append(worker_id)
+        outcome = outcomes[len(calls) - 1]
+        if isinstance(outcome, Exception):
+            raise outcome
+        return outcome
+
+    monkeypatch.setattr(worker, "run_once", fake_run_once)
+    monkeypatch.setattr(worker.gc, "collect_garbage", lambda: {"skipped": True})
+    worker.run_forever("w", should_stop=lambda: len(calls) >= len(outcomes), sleep=sleeps.append)
+
+    assert len(calls) == 5  # survived three failures and processed afterwards
+    assert sleeps[:3] == [1.0, 2.0, 4.0]  # exponential backoff while the database is down
+
+
+def test_loop_survives_an_unexpected_error(monkeypatch):
+    calls = []
+
+    def fake_run_once(worker_id):
+        calls.append(1)
+        if len(calls) == 1:
+            raise RuntimeError("bug in one iteration")
+        return False
+
+    monkeypatch.setattr(worker, "run_once", fake_run_once)
+    monkeypatch.setattr(worker.gc, "collect_garbage", lambda: {"skipped": True})
+    worker.run_forever("w", should_stop=lambda: len(calls) >= 2, sleep=lambda s: None)
+    assert len(calls) == 2
+
+
+def test_transcriber_network_error_is_retried_not_failed(memory_id, monkeypatch):
+    class Offline:
+        def transcribe(self, audio, suffix):
+            raise ConnectionError("couldn't download the model")
+
+    monkeypatch.setattr(worker, "get_transcriber", lambda: Offline())
+    drain()
+
+    assert memory_row(memory_id)["status"] == "pending"
+    job = job_row(memory_id)
+    assert job["attempts"] == 1 and "ConnectionError" in job["last_error"]
+
+
+def test_failed_memory_records_its_stage(memory_id, llm, monkeypatch):
+    monkeypatch.setattr(worker.get_settings(), "job_max_attempts", 1)
+    llm.result = EnrichmentFailed("model down")
+    drain()
+    assert memory_row(memory_id)["failed_stage"] == "enrich"
+
+
+def test_heartbeat_keeps_a_slow_stage_from_being_claimed_twice(memory_id, transcriber, monkeypatch):
+    import threading
+    import time
+
+    monkeypatch.setattr(worker.get_settings(), "job_lease_s", 1)
+    original = transcriber.transcribe
+
+    def slow_transcribe(audio, suffix):
+        time.sleep(2.5)  # well past the 1 s lease
+        return original(audio, suffix)
+
+    monkeypatch.setattr(transcriber, "transcribe", slow_transcribe)
+    runner = threading.Thread(target=worker.run_once, args=("slow-worker",))
+    runner.start()
+    time.sleep(0.2)
+    stolen = []
+    while runner.is_alive():
+        job = queue.claim("other-worker")
+        if job:
+            stolen.append(job)
+        time.sleep(0.1)
+    runner.join()
+
+    assert stolen == []
+    assert memory_row(memory_id)["status"] == "transcribed"
+    assert transcriber.calls == 1
+
+
+def test_heartbeat_reports_a_lost_lease(memory_id):
+    job = queue.claim("a")
+    assert queue.heartbeat(job, "a") is True
+    expire_leases()
+    assert queue.heartbeat(job, "a") is False

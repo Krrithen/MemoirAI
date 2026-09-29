@@ -14,6 +14,8 @@ import logging
 import time
 from pathlib import Path
 
+import psycopg
+
 from app import db
 from app.config import get_settings
 from app.storage import media_path
@@ -25,10 +27,26 @@ GC_LOCK = 872_402  # only one worker collects at a time
 
 def collect_garbage() -> dict:
     grace_s = get_settings().media_gc_grace_s
-    deleted_rows: list[str] = []
+    try:
+        deleted_rows, known = _collect_rows(grace_s)
+    except psycopg.errors.ForeignKeyViolation:
+        # A memory started using media we were about to delete; the whole round rolled back.
+        logger.info("Media GC skipped a round: media became referenced while being collected")
+        return {"skipped": True}
+    if known is None:
+        return {"skipped": True}
+
+    orphan_files = _collect_orphan_files(known, grace_s)
+    if deleted_rows or orphan_files:
+        logger.info("Media GC removed %d unreferenced media and %d orphan files", len(deleted_rows), orphan_files)
+    return {"skipped": False, "rows": len(deleted_rows), "orphan_files": orphan_files}
+
+
+def _collect_rows(grace_s: int) -> tuple[list[str], set[str] | None]:
+    """Delete unreferenced media rows and their files in one transaction. Returns (deleted, all known)."""
     with db.connect() as conn:
         if not conn.execute("SELECT pg_try_advisory_xact_lock(%s) AS ok", (GC_LOCK,)).fetchone()["ok"]:
-            return {"skipped": True}
+            return [], None  # another worker is collecting
         deleted_rows = [
             r["sha256"]
             for r in conn.execute(
@@ -46,7 +64,11 @@ def collect_garbage() -> dict:
         for sha in deleted_rows:
             media_path(sha).unlink(missing_ok=True)
         known = {r["sha256"] for r in conn.execute("SELECT sha256 FROM media")}
+    return deleted_rows, known
 
+
+def _collect_orphan_files(known: set[str], grace_s: int) -> int:
+    """Delete files on disk that have no media row and are older than the grace period."""
     orphan_files = 0
     root = Path(get_settings().media_dir)
     cutoff = time.time() - grace_s
@@ -55,7 +77,4 @@ def collect_garbage() -> dict:
             if path.is_file() and path.name not in known and path.stat().st_mtime < cutoff:
                 path.unlink(missing_ok=True)
                 orphan_files += 1
-
-    if deleted_rows or orphan_files:
-        logger.info("Media GC removed %d unreferenced media and %d orphan files", len(deleted_rows), orphan_files)
-    return {"skipped": False, "rows": len(deleted_rows), "orphan_files": orphan_files}
+    return orphan_files

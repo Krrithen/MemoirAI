@@ -15,6 +15,8 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql://memoir:memoir@localhost:5433/memoir"
     media_dir: str = "data/media"
+    db_pool_max: int = 10
+    db_pool_timeout_s: float = 10.0  # how long to wait for a connection before failing
     cors_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
     max_audio_bytes: int = 100 * 1024 * 1024
@@ -39,6 +41,7 @@ class Settings(BaseSettings):
     job_backoff_base_s: float = 2.0  # retry delay: base * 2^(attempt-1), capped, with jitter
     job_backoff_cap_s: float = 300.0
     worker_poll_s: float = 1.0
+    worker_db_retry_cap_s: float = 30.0  # max wait between retries while the database is down
     media_gc_grace_s: int = 3600  # unreferenced media older than this is deleted
     media_gc_interval_s: int = 600
 

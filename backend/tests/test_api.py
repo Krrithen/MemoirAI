@@ -149,3 +149,17 @@ def test_unknown_media_hash_is_404(client):
 
 def test_malformed_media_hash_is_rejected(client):
     assert client.get("/api/media/not-a-hash").status_code == 422
+
+
+def test_metrics_report_queue_depth_and_statuses(client, transcriber):
+    client.post("/api/memories", files=AUDIO)
+    client.post("/api/memories", files=OTHER_AUDIO)
+    transcriber.text = ""
+    drain()  # both fail at transcribe (no speech)
+    client.post("/api/memories", files=AUDIO)
+
+    body = client.get("/metrics").text
+    assert 'memoir_queue_jobs{stage="transcribe",state="waiting"} 1' in body
+    assert 'memoir_memories{status="failed"} 2' in body
+    assert 'memoir_failed_memories{stage="transcribe"} 2' in body
+    assert "memoir_queue_oldest_job_age_seconds" in body

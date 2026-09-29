@@ -1,5 +1,7 @@
 # Memoir AI
 
+[![CI](https://github.com/Krrithen/MemoirAI/actions/workflows/ci.yml/badge.svg)](https://github.com/Krrithen/MemoirAI/actions/workflows/ci.yml)
+
 Record a voice memory and Memoir AI turns it into a titled, tagged story you can browse later. Everything runs on your own machine: no API keys, no cloud services.
 
 Started as a 2-day prototype in April 2025; now being rebuilt as a local-first memory engine.
@@ -26,12 +28,17 @@ POST /api/memories ──► memories(status=pending) + jobs(stage=transcribe)  
 What it guarantees:
 
 - **No duplicates on retry.** Sending the same upload again with the same `Idempotency-Key` header returns the same memory. The frontend sends one key per recording.
-- **Crash-safe stages.** A job is leased, not deleted, while it runs. If a worker dies, the lease expires and another worker picks the job up. A stage's output, the memory's status and the job update commit in one transaction, and every write is fenced on the lease, so a worker that lost its lease can't overwrite the new owner's result. Stages run at least once; their writes are idempotent.
+- **Crash-safe stages.** A job is leased, not deleted, while it runs, and the worker renews the lease every few minutes while a stage is still going. If a worker dies, the lease expires and another worker picks the job up. A stage's output, the memory's status and the job update commit in one transaction, and every write is fenced on the lease, so a worker that lost its lease can't overwrite the new owner's result. Stages run at least once; their writes are idempotent.
 - **No story without a transcript.** Recordings with no speech fail straight away (no retries) with a clear reason. The database enforces it too: a story can't exist without a transcript, and `ready` means transcript, title and story are all present.
 - **Failed memories can be retried** from the stage they failed at (`POST /api/memories/{id}/retry`, or the Retry button).
 - **No orphaned media.** The worker garbage-collects stored files no memory references (after a 1-hour grace period), without racing uploads of the same bytes.
 
-What it doesn't: a single Postgres with no replication, no accounts (every memory is visible to whoever runs it), and no progress for long stages beyond the status (a stage that outlives its 10-minute lease may run twice, and only the current lease holder's result is kept).
+- **Workers ride out outages.** If Postgres goes away, the worker backs off (up to 30 s between tries) and resumes when it's back; temporary transcriber or model errors (network, model download, memory) are retried, while undecodable audio and silence fail straight away.
+- **Durable media.** Files are fsynced before the atomic rename, and a truncated file is detected by size and rewritten.
+
+What it doesn't: a single Postgres with no replication, no accounts (every memory is visible to whoever runs it), and at-least-once stages (a worker that loses its lease, e.g. a paused laptop, may repeat a stage; only the current lease holder's result is kept).
+
+`GET /metrics` exposes queue depth by stage, retrying jobs, the oldest job's age, memories by status and failures by stage, in Prometheus format.
 
 The original transcript is always stored and shown next to the story ("What you said"). Stories are creative by default; set `STORY_STYLE=faithful` for a light edit that adds nothing the speaker didn't say. How much each style adds is measured in [docs/results/faithfulness.md](docs/results/faithfulness.md); rerun with `uv run --project backend python eval/faithfulness/run.py --label <name>`.
 

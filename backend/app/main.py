@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import FastAPI, File, Header, HTTPException, Request, UploadFile
 from fastapi import Path as PathParam
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 
 from app import db
 from app.config import get_settings
@@ -22,6 +22,7 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     db.init_schema()
     yield
+    db.close_pool()
 
 
 app = FastAPI(title="Memoir AI API", lifespan=lifespan)
@@ -67,6 +68,58 @@ def readiness_check():
         logger.warning("Readiness check failed: %s", e)
         return JSONResponse({"status": "unavailable", "database": "down"}, status_code=503)
     return {"status": "ready", "database": "ok"}
+
+
+STAGES = ("transcribe", "enrich")
+STATUSES = ("pending", "transcribed", "ready", "failed")
+
+
+@app.get("/metrics", response_class=PlainTextResponse)
+def metrics():
+    """Queue and pipeline health in Prometheus text format."""
+    with db.connect() as conn:
+        jobs = {
+            (r["stage"], r["state"]): r["n"]
+            for r in conn.execute(
+                "SELECT stage, CASE WHEN lease_until > now() THEN 'running' ELSE 'waiting' END AS state,"
+                " count(*) AS n FROM jobs GROUP BY 1, 2"
+            )
+        }
+        retrying = {
+            r["stage"]: r["n"]
+            for r in conn.execute("SELECT stage, count(*) AS n FROM jobs WHERE last_error IS NOT NULL GROUP BY 1")
+        }
+        oldest = conn.execute(
+            "SELECT coalesce(extract(epoch FROM now() - min(created_at)), 0) AS s FROM jobs"
+        ).fetchone()["s"]
+        statuses = {r["status"]: r["n"] for r in conn.execute("SELECT status, count(*) AS n FROM memories GROUP BY 1")}
+        failed = {
+            r["failed_stage"]: r["n"]
+            for r in conn.execute("SELECT failed_stage, count(*) AS n FROM memories WHERE status = 'failed' GROUP BY 1")
+        }
+
+    lines = [
+        "# HELP memoir_queue_jobs Jobs in the queue, by stage and whether a worker holds them.",
+        "# TYPE memoir_queue_jobs gauge",
+        *(
+            f'memoir_queue_jobs{{stage="{stage}",state="{state}"}} {jobs.get((stage, state), 0)}'
+            for stage in STAGES
+            for state in ("waiting", "running")
+        ),
+        "# HELP memoir_queue_retrying_jobs Jobs whose last attempt failed and that are waiting to retry.",
+        "# TYPE memoir_queue_retrying_jobs gauge",
+        *(f'memoir_queue_retrying_jobs{{stage="{stage}"}} {retrying.get(stage, 0)}' for stage in STAGES),
+        "# HELP memoir_queue_oldest_job_age_seconds Age of the oldest unfinished job (0 when the queue is empty).",
+        "# TYPE memoir_queue_oldest_job_age_seconds gauge",
+        f"memoir_queue_oldest_job_age_seconds {float(oldest):.3f}",
+        "# HELP memoir_memories Memories by status.",
+        "# TYPE memoir_memories gauge",
+        *(f'memoir_memories{{status="{status}"}} {statuses.get(status, 0)}' for status in STATUSES),
+        "# HELP memoir_failed_memories Failed memories by the stage they failed at.",
+        "# TYPE memoir_failed_memories gauge",
+        *(f'memoir_failed_memories{{stage="{stage}"}} {failed.get(stage, 0)}' for stage in STAGES),
+    ]
+    return "\n".join(lines) + "\n"
 
 
 @app.get("/api/memories")
@@ -151,7 +204,7 @@ def retry_memory(memory_id: UUID, request: Request):
     with db.connect() as conn:
         row = conn.execute(
             "UPDATE memories SET status = CASE WHEN transcript IS NULL THEN 'pending' ELSE 'transcribed' END,"
-            " error = NULL, updated_at = now() WHERE id = %s AND status = 'failed' RETURNING *",
+            " error = NULL, failed_stage = NULL, updated_at = now() WHERE id = %s AND status = 'failed' RETURNING *",
             (memory_id,),
         ).fetchone()
         if row is None:
