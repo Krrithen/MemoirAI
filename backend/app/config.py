@@ -33,6 +33,15 @@ class Settings(BaseSettings):
     story_style: Literal["creative", "faithful"] = "creative"
     llm_temperature: float | None = None  # None = the story style's default
 
+    # Job queue (see app/pipeline)
+    job_max_attempts: int = 5  # claims per stage before the memory is marked failed
+    job_lease_s: int = 600  # a claimed job becomes claimable again after this long
+    job_backoff_base_s: float = 2.0  # retry delay: base * 2^(attempt-1), capped, with jitter
+    job_backoff_cap_s: float = 300.0
+    worker_poll_s: float = 1.0
+    media_gc_grace_s: int = 3600  # unreferenced media older than this is deleted
+    media_gc_interval_s: int = 600
+
     assemblyai_api_key: str | None = None
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-2.0-flash"

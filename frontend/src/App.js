@@ -10,10 +10,10 @@ function App() {
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleCreated = (memory) => {
+  // The memory comes back 'pending'; the gallery shows its progress until it's ready.
+  const handleCreated = () => {
     setCreating(false);
     setRefreshKey((k) => k + 1);
-    setSelectedMemory(memory);
   };
 
   return (

@@ -29,6 +29,11 @@ echo "Starting backend server..."
 uv run uvicorn app.main:app --reload &
 BACKEND_PID=$!
 
+# Start the background worker that transcribes and writes stories
+echo "Starting worker..."
+uv run python -m app.pipeline.worker &
+WORKER_PID=$!
+
 # Go back to root directory
 cd ..
 
@@ -56,5 +61,5 @@ echo ""
 echo "Press Ctrl+C to stop all servers"
 
 # Wait for user to press Ctrl+C
-trap "kill $BACKEND_PID $FRONTEND_PID; exit" INT
+trap "kill $BACKEND_PID $WORKER_PID $FRONTEND_PID; exit" INT
 wait 

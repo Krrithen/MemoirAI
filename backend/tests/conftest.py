@@ -20,6 +20,7 @@ os.environ["MEDIA_DIR"] = tempfile.mkdtemp(prefix="memoir-media-")
 from fastapi.testclient import TestClient  # noqa: E402
 
 from app import db, main  # noqa: E402
+from app.pipeline import worker  # noqa: E402
 from app.providers.llm import Enrichment  # noqa: E402
 from app.providers.transcriber import TranscriptionFailed  # noqa: E402
 
@@ -63,7 +64,7 @@ def test_database():
     with admin:
         admin.execute(f"DROP DATABASE IF EXISTS {TEST_DB} WITH (FORCE)")
         admin.execute(f"CREATE DATABASE {TEST_DB}")
-    db.init_schema()
+    db.migrate()
     yield
     with psycopg.connect(ADMIN_URL, autocommit=True) as admin:
         admin.execute(f"DROP DATABASE IF EXISTS {TEST_DB} WITH (FORCE)")
@@ -72,20 +73,20 @@ def test_database():
 @pytest.fixture(autouse=True)
 def clean_tables():
     with db.connect() as conn:
-        conn.execute("TRUNCATE memories, media")
+        conn.execute("TRUNCATE jobs, memories, media")
 
 
 @pytest.fixture
 def transcriber(monkeypatch) -> FakeTranscriber:
     fake = FakeTranscriber()
-    monkeypatch.setattr(main, "get_transcriber", lambda: fake)
+    monkeypatch.setattr(worker, "get_transcriber", lambda: fake)
     return fake
 
 
 @pytest.fixture
 def llm(monkeypatch) -> FakeLLM:
     fake = FakeLLM()
-    monkeypatch.setattr(main, "get_llm", lambda: fake)
+    monkeypatch.setattr(worker, "get_llm", lambda: fake)
     return fake
 
 
@@ -98,3 +99,27 @@ def client(transcriber, llm):
 def count(table: str) -> int:
     with db.connect() as conn:
         return conn.execute(f"SELECT count(*) AS n FROM {table}").fetchone()["n"]
+
+
+def drain(worker_id: str = "test-worker") -> int:
+    """Run the worker until no job is due. Returns how many jobs it processed."""
+    n = 0
+    while worker.run_once(worker_id):
+        n += 1
+    return n
+
+
+def fast_forward_jobs() -> None:
+    """Make every job due now (skips retry backoff delays)."""
+    with db.connect() as conn:
+        conn.execute("UPDATE jobs SET run_after = now()")
+
+
+def memory_row(memory_id) -> dict:
+    with db.connect() as conn:
+        return conn.execute("SELECT * FROM memories WHERE id = %s", (memory_id,)).fetchone()
+
+
+def job_row(memory_id) -> dict | None:
+    with db.connect() as conn:
+        return conn.execute("SELECT * FROM jobs WHERE memory_id = %s", (memory_id,)).fetchone()

@@ -10,6 +10,14 @@ const CreateMemory = ({ onClose, onCreated }) => {
   const [saving, setSaving] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState(null);
+  // One key per recording: if the upload is retried (e.g. after a network error),
+  // the server returns the memory it already created instead of making a duplicate.
+  const [idempotencyKey, setIdempotencyKey] = useState(null);
+
+  const captureAudio = (blob) => {
+    setAudioBlob(blob);
+    setIdempotencyKey(blob ? crypto.randomUUID() : null);
+  };
 
   useEffect(() => {
     if (!saving) return undefined;
@@ -28,7 +36,11 @@ const CreateMemory = ({ onClose, onCreated }) => {
         formData.append(mediaFile.type.startsWith("video") ? "video" : "image", mediaFile);
       }
 
-      const response = await fetch(`${API_URL}/api/memories`, { method: "POST", body: formData });
+      const response = await fetch(`${API_URL}/api/memories`, {
+        method: "POST",
+        body: formData,
+        headers: { "Idempotency-Key": idempotencyKey },
+      });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error(body.detail || `The server returned ${response.status}`);
@@ -48,8 +60,8 @@ const CreateMemory = ({ onClose, onCreated }) => {
             New memory
           </h2>
           <p className="mt-1 text-sm text-gray-400">
-            Record it in your own words. It's transcribed and turned into a story on this machine, and your original
-            words are always kept.
+            Record it in your own words. It's transcribed and turned into a story on this machine in the background,
+            and your original words are always kept.
           </p>
         </header>
 
@@ -59,7 +71,7 @@ const CreateMemory = ({ onClose, onCreated }) => {
             Your voice
             <span className="text-xs font-normal text-gray-500">required</span>
           </h3>
-          <VoiceRecorder onAudioCapture={setAudioBlob} disabled={saving} />
+          <VoiceRecorder onAudioCapture={captureAudio} disabled={saving} />
         </section>
 
         <section className="space-y-2">
@@ -80,7 +92,7 @@ const CreateMemory = ({ onClose, onCreated }) => {
         <footer className="flex flex-col-reverse items-stretch gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-gray-500">
             {saving
-              ? `Transcribing and writing your story… ${elapsed}s (usually about 10s)`
+              ? `Uploading… ${elapsed}s`
               : audioBlob
                 ? "Ready when you are."
                 : "Record something to continue."}

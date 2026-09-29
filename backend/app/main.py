@@ -1,17 +1,15 @@
 import logging
 from contextlib import asynccontextmanager
-from pathlib import Path
+from uuid import UUID
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, Header, HTTPException, Request, UploadFile
 from fastapi import Path as PathParam
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from app import db
 from app.config import get_settings
-from app.providers import get_llm, get_transcriber
-from app.providers.llm import EnrichmentFailed
-from app.providers.transcriber import TranscriptionFailed
+from app.pipeline import queue
 from app.storage import media_path, read_upload, write_media
 
 logging.basicConfig(level=logging.INFO)
@@ -22,7 +20,7 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    db.init_schema()
+    db.migrate()
     yield
 
 
@@ -42,6 +40,8 @@ def _to_api(row: dict, request: Request) -> dict:
 
     return {
         "id": str(row["id"]),
+        "status": row["status"],
+        "error": row["error"],
         "audioUrl": url(row["audio_sha256"]),
         "videoUrl": url(row["video_sha256"]),
         "imageUrl": url(row["image_sha256"]),
@@ -76,64 +76,88 @@ def get_all_memories(request: Request):
     return {"memories": [_to_api(r, request) for r in rows]}
 
 
-# Sync handlers: FastAPI runs them in a threadpool, so slow model calls
-# don't block the event loop for other requests.
-@app.post("/api/memories")
+def _get_memory(memory_id: UUID) -> dict:
+    with db.connect() as conn:
+        row = conn.execute("SELECT * FROM memories WHERE id = %s", (memory_id,)).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Memory not found")
+    return row
+
+
+@app.get("/api/memories/{memory_id}")
+def get_memory(memory_id: UUID, request: Request):
+    return _to_api(_get_memory(memory_id), request)
+
+
+@app.post("/api/memories", status_code=202)
 def create_memory(
     request: Request,
     audio: UploadFile | None = File(None),
     image: UploadFile | None = File(None),
     video: UploadFile | None = File(None),
+    idempotency_key: str | None = Header(None, max_length=200),
 ):
+    """Store the upload and queue it for the worker; returns 202 with the memory in 'pending'.
+
+    With an Idempotency-Key header, retrying the same upload returns the same memory (200)
+    instead of creating a second one.
+    """
     if not audio:
         raise HTTPException(status_code=400, detail="An audio recording is required")
 
     audio_up = read_upload(audio, settings.max_audio_bytes)
     video_up = read_upload(video, settings.max_video_bytes) if video else None
     image_up = read_upload(image, settings.max_image_bytes) if image else None
-
-    # Run the model stages before storing anything, so a failure leaves no
-    # partial memory and no orphaned media behind.
-    try:
-        transcript = get_transcriber().transcribe(audio_up.data, Path(audio_up.filename).suffix)
-    except TranscriptionFailed as e:
-        logger.warning("Transcription failed: %s", e)
-        raise HTTPException(status_code=422, detail=str(e)) from e
-    logger.info("Transcribed %d characters", len(transcript))
-
-    try:
-        enrichment = get_llm().enrich(transcript)
-    except EnrichmentFailed as e:
-        logger.error("Enrichment failed: %s", e)
-        raise HTTPException(status_code=502, detail=str(e)) from e
-
     uploads = [u for u in (audio_up, video_up, image_up) if u]
-    for u in uploads:
-        write_media(u)
 
     with db.connect() as conn:
         for u in uploads:
+            # DO UPDATE (not DO NOTHING) locks the row, so media GC can't delete it under us.
             conn.execute(
-                "INSERT INTO media (sha256, content_type, bytes) VALUES (%s, %s, %s) ON CONFLICT (sha256) DO NOTHING",
+                "INSERT INTO media (sha256, content_type, bytes) VALUES (%s, %s, %s)"
+                " ON CONFLICT (sha256) DO UPDATE SET sha256 = EXCLUDED.sha256",
                 (u.sha256, u.content_type, len(u.data)),
             )
+            write_media(u)
+
         row = conn.execute(
-            "INSERT INTO memories"
-            " (audio_sha256, video_sha256, image_sha256, transcript, title, story, emotions, story_style)"
-            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *",
+            "INSERT INTO memories (audio_sha256, video_sha256, image_sha256, idempotency_key)"
+            " VALUES (%s, %s, %s, %s) ON CONFLICT (idempotency_key) DO NOTHING RETURNING *",
             (
                 audio_up.sha256,
                 video_up.sha256 if video_up else None,
                 image_up.sha256 if image_up else None,
-                transcript,
-                enrichment.title,
-                enrichment.story,
-                enrichment.emotions,
-                settings.story_style,
+                idempotency_key,
             ),
         ).fetchone()
 
-    logger.info("Stored memory %s", row["id"])
+        if row is None:  # this key was used before
+            existing = conn.execute("SELECT * FROM memories WHERE idempotency_key = %s", (idempotency_key,)).fetchone()
+            if existing["audio_sha256"] != audio_up.sha256:
+                raise HTTPException(
+                    status_code=422, detail="Idempotency-Key was already used for a different recording"
+                )
+            return JSONResponse(_to_api(existing, request), status_code=200)
+
+        queue.enqueue(conn, row["id"])
+
+    logger.info("Queued memory %s", row["id"])
+    return _to_api(row, request)
+
+
+@app.post("/api/memories/{memory_id}/retry", status_code=202)
+def retry_memory(memory_id: UUID, request: Request):
+    """Re-queue a failed memory from the stage it failed at."""
+    with db.connect() as conn:
+        row = conn.execute(
+            "UPDATE memories SET status = CASE WHEN transcript IS NULL THEN 'pending' ELSE 'transcribed' END,"
+            " error = NULL, updated_at = now() WHERE id = %s AND status = 'failed' RETURNING *",
+            (memory_id,),
+        ).fetchone()
+        if row is None:
+            _get_memory(memory_id)  # 404 if it doesn't exist
+            raise HTTPException(status_code=409, detail="Only failed memories can be retried")
+        queue.enqueue(conn, row["id"], "transcribe" if row["transcript"] is None else "enrich")
     return _to_api(row, request)
 
 
