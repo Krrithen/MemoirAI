@@ -6,9 +6,9 @@ from psycopg.rows import dict_row
 
 from app.config import get_settings
 
-MIGRATIONS_DIR = Path(__file__).parent / "migrations"
-# Arbitrary constant: serialises migrations when the API and workers start together.
-MIGRATION_LOCK = 872_401
+SCHEMA_PATH = Path(__file__).parent / "schema.sql"
+# Arbitrary constant: serialises schema creation when the API and workers start together.
+SCHEMA_LOCK = 872_401
 
 
 @contextmanager
@@ -28,16 +28,8 @@ def ping(timeout_s: int = 2) -> None:
         conn.execute("SELECT 1")
 
 
-def migrate() -> None:
-    """Apply any unapplied migrations/NNN_*.sql in order, exactly once, in one transaction."""
+def init_schema() -> None:
+    """Create any missing tables from schema.sql (existing tables are left as they are)."""
     with connect() as conn:
-        conn.execute("SELECT pg_advisory_xact_lock(%s)", (MIGRATION_LOCK,))
-        conn.execute(
-            "CREATE TABLE IF NOT EXISTS schema_migrations"
-            " (version TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())"
-        )
-        applied = {r["version"] for r in conn.execute("SELECT version FROM schema_migrations")}
-        for path in sorted(MIGRATIONS_DIR.glob("*.sql")):
-            if path.stem not in applied:
-                conn.execute(path.read_text())
-                conn.execute("INSERT INTO schema_migrations (version) VALUES (%s)", (path.stem,))
+        conn.execute("SELECT pg_advisory_xact_lock(%s)", (SCHEMA_LOCK,))
+        conn.execute(SCHEMA_PATH.read_text())

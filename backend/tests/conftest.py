@@ -4,6 +4,7 @@ A throwaway `memoir_test` database is created per session; tables are truncated 
 """
 
 import os
+import shutil
 import tempfile
 
 import psycopg
@@ -15,7 +16,8 @@ TEST_URL = ADMIN_URL.rsplit("/", 1)[0] + f"/{TEST_DB}"
 
 # Must be set before app modules read settings.
 os.environ["DATABASE_URL"] = TEST_URL
-os.environ["MEDIA_DIR"] = tempfile.mkdtemp(prefix="memoir-media-")
+MEDIA_DIR = tempfile.mkdtemp(prefix="memoir-media-")
+os.environ["MEDIA_DIR"] = MEDIA_DIR
 
 from fastapi.testclient import TestClient  # noqa: E402
 
@@ -64,10 +66,11 @@ def test_database():
     with admin:
         admin.execute(f"DROP DATABASE IF EXISTS {TEST_DB} WITH (FORCE)")
         admin.execute(f"CREATE DATABASE {TEST_DB}")
-    db.migrate()
+    db.init_schema()
     yield
     with psycopg.connect(ADMIN_URL, autocommit=True) as admin:
         admin.execute(f"DROP DATABASE IF EXISTS {TEST_DB} WITH (FORCE)")
+    shutil.rmtree(MEDIA_DIR, ignore_errors=True)
 
 
 @pytest.fixture(autouse=True)

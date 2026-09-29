@@ -20,7 +20,7 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    db.migrate()
+    db.init_schema()
     yield
 
 

@@ -62,7 +62,7 @@ npm install
 npm start
 ```
 
-The Whisper model (`small` by default) downloads on the first transcription and is cached after that. You can run several workers; each job is processed by one at a time. Schema changes are versioned in `backend/app/migrations/` and applied automatically on startup.
+The Whisper model (`small` by default) downloads on the first transcription and is cached after that. You can run several workers; each job is processed by one at a time. The schema lives in `backend/app/schema.sql` and is created on startup. While the project is pre-release it isn't migrated: after changing it, reset the database with `docker compose down -v`.
 
 `GET /api/health` reports that the API process is up; `GET /api/ready` also checks the database (2 s timeout) and returns 503 if it's unreachable.
 
